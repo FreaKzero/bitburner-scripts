@@ -1,17 +1,27 @@
 import { deepscan } from "./lib/scan";
-import { HACKS } from "./lib/const";
 
 /** @param {import(".").NS } ns */
 export async function main(ns) {
   async function useHacks(host) {
-    HACKS.forEach((hack) => {
-      if (ns.fileExists(hack, "home")) {
-        const method = hack.toLowerCase().slice(0, -4);
-        if (ns[method]) {
-          ns[method](host);
-        }
-      }
-    });
+    if (ns.fileExists("BruteSSH.exe", "home")) {
+      ns.brutessh(host);
+    }
+
+    if (ns.fileExists("FTPCrack.exe", "home")) {
+      ns.ftpcrack(host);
+    }
+
+    if (ns.fileExists("relaySMTP.exe", "home")) {
+      ns.relaysmtp(host);
+    }
+
+    if (ns.fileExists("HTTPWorm.exe", "home")) {
+      ns.httpworm(host)
+    }
+
+    if (ns.fileExists("SQLInject.exe", "home")) {
+      ns.sqlinject(host);
+    }
   }
 
   async function crack(host) {
@@ -27,7 +37,6 @@ export async function main(ns) {
     if (!x.hasAdminRights && openPorts >= x.numOpenPortsRequired) {
       ns.tprint(`New Host hacked: ${host}`);
       await ns.nuke(host);
-      await ns.hack(host);
       return 1;
     } else {
       useHacks(host);
