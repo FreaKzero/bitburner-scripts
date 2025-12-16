@@ -13,4 +13,3 @@
 - [x] Remote Exec Script (Home => execute scripts on nuked hosts)
 - [ ] threads ?! in exec script
 - [ ] automate Brutessh ... how to check if installed ?
-- [ ] can i import ?!
