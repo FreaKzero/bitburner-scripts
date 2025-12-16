@@ -1,55 +1,31 @@
 import { deepscan } from "./lib/scan";
-
-//@TODO - check filenames of all
-const HACKS = ["BruteSSH.exe"];
+import { DISTFILES } from "./lib/const";
 
 /** @param {import(".").NS } ns */
 export async function main(ns) {
-  const log = ns.tprintRaw;
+  const run = ns.args[0] || null;
+  const pattack = ns.args[1] || '';
 
-  async function useHacks(host) {
-    HACKS.forEach((hack) => {
-      if (ns.fileExists(hack, "home")) {
-        const method = hack.toLowerCase().slice(0, -4);
-        if (ns[method]) {
-          ns[method](host);
-        } else {
-          log("Error: Methodname doesnt exist");
-        }
-      }
-    });
-  }
-
-  async function crack(host) {
-    const x = ns.getServer(host);
-    const openPorts = [
-      Number(x.smtpPortOpen),
-      Number(x.httpPortOpen),
-      Number(x.sshPortOpen),
-      Number(x.sqlPortOpen),
-      Number(x.ftpPortOpen),
-    ].reduce((p, acc) => acc + p, 0);
-
-    if (!x.hasAdminRights && openPorts >= x.numOpenPortsRequired) {
-      await ns.nuke(host);
-      await ns.hack(host);
-      ns.scp(["dist/auto.js"], host, "home");
-      ns.exec("dist/auto.js", host);
-      return 1;
-    } else if (x.hasAdminRights) {
-      ns.scp(["dist/auto.js"], host, "home");
-      ns.exec("dist/auto.js", host);
-      return 1;
-    } else {
-      useHacks(host);
-      return 0;
-    }
-  }
-
-  // main
   const servers = deepscan(ns);
 
   for (const serv of servers) {
-    await crack(serv);
+    if (serv !== "home") {
+      ns.killall(serv);
+      ns.scp(DISTFILES, serv);
+
+      if (run) {
+        const aRam = ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv);
+        const sRam = ns.getScriptRam(run);
+        const threads = Math.floor(aRam / sRam);
+        const attack = pattack.trim() === `` ? serv : pattack;
+        const secLevel = ns.getServerRequiredHackingLevel(attack);
+
+        if (ns.getPlayer().skills.hacking >= secLevel) {
+          ns.exec(run, serv, threads || 1, attack);
+        } else {
+          ns.tprintRaw(`${pattack} requires Hacklevel of ${secLevel}`);
+        }
+      }
+    }
   }
 }

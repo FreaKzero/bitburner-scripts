@@ -26,5 +26,6 @@ export async function main(ns) {
         await ns.hack(target);
         serverMoneyAvailable = ns.getServerMoneyAvailable(target)
         serverMaxMoney = ns.getServerMaxMoney(target);
+        
     }
 }
