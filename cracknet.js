@@ -25,6 +25,7 @@ export async function main(ns) {
   }
 
   async function crack(host) {
+    useHacks(host);
     const x = ns.getServer(host);
     const openPorts = [
       Number(x.smtpPortOpen),
@@ -33,21 +34,18 @@ export async function main(ns) {
       Number(x.sqlPortOpen),
       Number(x.ftpPortOpen),
     ].reduce((p, acc) => acc + p, 0);
-
+    
     if (!x.hasAdminRights && openPorts >= x.numOpenPortsRequired) {
       ns.tprint(`New Host hacked: ${host}`);
       await ns.nuke(host);
-      return 1;
-    } else {
-      useHacks(host);
-      return 0;
     }
   }
 
   // main
   const servers = deepscan(ns);
-
   for (const serv of servers) {
-    await crack(serv);
+    if (serv !== "home") {
+      await crack(serv);
+    }
   }
 }
