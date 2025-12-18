@@ -1,1 +1,1 @@
-unalias --all;alias cracknet="run bin/cracknet.js";alias distribute="run bin/distribute.js"; alias thread="run bin/thread.js";alias lsnet="run bin/lsnet.js";alias conn="run bin/conn.js"
+unalias --all;alias dir="ls";alias cracknet="run bin/cracknet.js";alias distribute="run bin/distribute.js"; alias thread="run bin/thread.js";alias lsnet="run bin/lsnet.js";alias conn="run bin/conn.js"

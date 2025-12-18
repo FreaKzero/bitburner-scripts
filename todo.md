@@ -4,18 +4,14 @@
 
 ### Research
 - Buying Hardware via scripting ?
-- Hacknet nodes ? 
 - ability to communicate ? Sockets ? Messaging ?
 
 ### Todo:
 - [x] Share RAM via ns.share to a faction
 - [x] share.js
 - [x] threads.js
-- [] Monitor program
-- [] Hacknet Manager
+- [x] Monitor program
+- [x] Hacknet Manager
+- [x] Server Manager
 - [] Hardware Manager
 
-
-### Notes
-I.I.I.I => Blackhand
-connect joesguns;connect max-hardware;connect omega-net;connect the-hub;connect I.I.I.I
