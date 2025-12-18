@@ -14,11 +14,10 @@ export async function main(ns) {
       const serv = ns.getServer(item);
       const money = ns.formatNumber(serv.moneyAvailable);
       const lvl = serv.requiredHackingSkill;
-      const bd = serv.backdoorInstalled ? '👑' : serv.hasAdminRights ? "🔑" : "🔒";
-      const col = SPECIAL_HOSTS.find(e => e === item) ? C.red : (serv.backdoorInstalled ? C.yellow : serv.hasAdminRights ? C.white : C.black)
-      const stock = STOCK_HOST_COLLECTION.find(e => e.host === item) || {sym: "    "}
-
-      output += `${col}  ${pad(bd, 3)} ${pad(lvl, 6)}${pad(stock.sym, 6)}${pad(item, 18)}${pad(
+      const bd = serv.backdoorInstalled ? '👑' : serv.hasAdminRights ? "🔑" : `🔒(${serv.numOpenPortsRequired})`;
+      const col = SPECIAL_HOSTS.find(e => e === item) ? C.magenta : (serv.backdoorInstalled ? C.yellow : serv.hasAdminRights ? C.white : C.black)
+      const stock = STOCK_HOST_COLLECTION.find(e => e.host === item) || {sym: "    "} 
+      output += `${col}  ${pad(bd, 6)} ${pad(lvl, 6)}${pad(stock.sym, 6)}${pad(item, 18)}${pad(
         money,
         15,
         "$",
