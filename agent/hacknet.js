@@ -62,8 +62,7 @@ export async function main(ns) {
 
     if (nodes.length < 1) {
       if (nodePrice < getBudget()) {
-        ns.hacknet.purchaseNode(1);
-        ns.print(`Purchasing new Node`);
+        ns.hacknet.purchaseNode();
       }
     }
 

@@ -12,6 +12,7 @@ export async function main(ns) {
     l.forEach((item) => {
       const serv = ns.getServer(item);
       const money = ns.formatNumber(serv.moneyAvailable);
+      const run = serv.ramUsed > 0 ? '🖥️' : ' ';
       const lvl = serv.requiredHackingSkill;
       const bd = serv.backdoorInstalled
         ? "👑"
@@ -31,7 +32,7 @@ export async function main(ns) {
       output += `${col}  ${pad(bd, 6)} ${pad(lvl, 6)}${pad(stock.sym, 6)}${pad(
         item,
         18
-      )}${pad(money, 15, "$", false)} ${C.reset}\n`;
+      )}${pad(money, 15, "$", false)} ${run} ${C.reset}\n`;
     });
 
     ns.print(output);
