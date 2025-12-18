@@ -3,8 +3,8 @@ import { getThreads } from "./lib/utils";
 
 /** @param {import(".").NS } ns */
 export async function main(ns) {
-    const host = ns.args[0] || null;
-    const script = ns.args[1] || null;
+    const script = ns.args[0] || null;
+    const host = ns.args[1] || null;
     const args = ns.args[2] || '';
 
     if (!host) {
