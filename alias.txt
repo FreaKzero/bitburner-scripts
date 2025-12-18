@@ -1,0 +1,1 @@
+unalias --all;alias cracknet="run cracknet.js";alias distribute="run distribute.js"; alias thread="run thread.js";alias lsnet="run scanner.js";alias conn="run conn.js"
