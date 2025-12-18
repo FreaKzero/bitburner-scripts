@@ -4,18 +4,9 @@ import { getThreads } from "./lib/utils";
 /** @param {import(".").NS } ns */
 export async function main(ns) {
     const script = ns.args[0] || null;
-    const host = ns.args[1] || null;
-    const args = ns.args[2] || '';
+    const args = ns.args[1] || '';
 
-    if (!host) {
-        const script = await ns.prompt('Script:', {type: 'select', choices: DISTFILES});
-        const args = await ns.prompt('args:', {type: 'text'});
+        ns.ui.openTail(script);
         const threads = getThreads(ns, 'home', script);
         ns.exec(script, 'home', threads, args);
-    }
-
-    if (host && script) {
-        const threads = getThreads(ns, host, script);
-        ns.exec(script, host, threads, args);
-    }
 }
