@@ -12,3 +12,10 @@
 - [x] share.js
 - [x] threads.js
 - [] Monitor program
+- [] Hacknet Manager
+- [] Hardware Manager
+
+
+### Notes
+I.I.I.I => Blackhand
+connect joesguns;connect max-hardware;connect omega-net;connect the-hub;connect I.I.I.I
