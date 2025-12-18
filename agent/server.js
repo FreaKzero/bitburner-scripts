@@ -1,13 +1,71 @@
+import { disableLogs } from "../lib/utils";
+
 /** @param {import("..").NS } ns */
 export async function main(ns) {
-    const SERVER_PREFIX = "frk";
+  disableLogs(ns, ["getServerMaxRam", "sleep", "upgradePurchasedServer"]);
 
-    const numServer = ns.getPurchasedServers().length;
-	const maxServer = ns.getPurchasedServerLimit();
+  const SERVER_PREFIX = "frk-server-";
+  const SERVER_NEW_RAM = 8;
+  const MAXRAM = ns.getPurchasedServerMaxRam();
 
-    if (numServer >= maxServer) {
-		ns.print(`Maximum of Purchaseable Servers reached`)
-		ns.exit();
-	}
-    
+  const numServer = ns.getPurchasedServers().length;
+  const maxServer = ns.getPurchasedServerLimit();
+
+  if (numServer >= maxServer) {
+    ns.print(`Maximum of Purchaseable Servers reached`);
+    ns.exit();
+  }
+
+  const getServerCollection = () => {
+    return ns.getPurchasedServers().map((host) => {
+      return {
+        name: host,
+        ram: ns.getServerMaxRam(host),
+      };
+    });
+  };
+
+  const calcUpgrade = (server, budget) => {
+    for (var i = server.ram * 2; i <= MAXRAM; i *= 2) {
+      if (ns.getPurchasedServerUpgradeCost(server.name, i) > budget) {
+        break;
+      }
+    }
+    return i / 2;
+  };
+
+  const getBudget = () => {
+    return ns.getPlayer().money;
+  };
+
+  ns.ui.openTail("agent/server.js");
+  ns.ui.setTailTitle("Server Upgrade Agent");
+
+  while (true) {
+    ns.clearLog();
+    const AllServers = getServerCollection();
+    const servers = AllServers.filter(
+      (a) => a.ram !== ns.getPurchasedServerMaxRam()
+    );
+    let O = `CURRENT BUDGET: $${ns.formatNumber(getBudget())}\n`;
+
+    if (!servers.length) {
+      if (ns.getPurchasedServerCost(SERVER_NEW_RAM) < getBudget()) {
+        ns.purchaseServer(
+          `${SERVER_PREFIX}${AllServers.length}`,
+          SERVER_NEW_RAM
+        );
+      }
+    }
+
+    for (const server of servers) {
+      const purRam = calcUpgrade(server, getBudget());
+      ns.upgradePurchasedServer(server.name, purRam);
+      O += `\n${server.name}\n`;
+      O += `RAM:${server.ram}\n`;
+    }
+
+    ns.print(O);
+    await ns.sleep(20000);
+  }
 }

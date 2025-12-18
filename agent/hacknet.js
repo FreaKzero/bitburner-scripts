@@ -51,6 +51,7 @@ export async function main(ns) {
   const getBudget = () => {
     return ns.getPlayer().money;
   }
+  
   while (true) {
     ns.clearLog();
     const nodes = getHacknetCollection();
