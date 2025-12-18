@@ -1,0 +1,33 @@
+{
+  "name": "bitburner-scripts",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/FreaKzero/bitburner-scripts#readme",
+  "bugs": {
+    "url": "https://github.com/FreaKzero/bitburner-scripts/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FreaKzero/bitburner-scripts.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "types": "./index.d.ts",
+  "bin": {
+    "bitburner-scripts": "bin/conn.js"
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "eslint": "^9.39.2",
+    "globals": "^16.5.0",
+    "typescript-eslint": "^8.50.0"
+  }
+}
