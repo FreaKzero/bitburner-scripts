@@ -1,7 +1,7 @@
-import { DISTFILES } from "./lib/const";
-import { getThreads } from "./lib/utils";
+import { DISTFILES } from "../lib/const";
+import { getThreads } from "../lib/utils";
 
-/** @param {import(".").NS } ns */
+/** @param {import("..").NS } ns */
 export async function main(ns) {
     const script = ns.args[0] || null;
     const args = ns.args[1] || '';

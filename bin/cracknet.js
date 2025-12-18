@@ -1,6 +1,6 @@
-import { deepscan } from "./lib/scan";
+import { deepscan } from "../lib/scan";
 
-/** @param {import(".").NS } ns */
+/** @param {import("..").NS } ns */
 export async function main(ns) {
   let O = ``;
 

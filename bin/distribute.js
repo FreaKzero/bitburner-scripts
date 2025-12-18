@@ -1,7 +1,7 @@
-import { deepscan } from "./lib/scan";
-import { DISTFILES } from "./lib/const";
+import { deepscan } from "../lib/scan";
+import { DISTFILES } from "../lib/const";
 
-/** @param {import(".").NS } ns */
+/** @param {import("..").NS } ns */
 export async function main(ns) {
   const run = ns.args[0] || 'dist/auto.js';
   const pattack = ns.args[1] || '';

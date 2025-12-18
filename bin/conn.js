@@ -1,7 +1,7 @@
-import { findConnection } from "./lib/scan";
-import { disableLogs } from "./lib/utils";
+import { findConnection } from "../lib/scan";
+import { disableLogs } from "../lib/utils";
 
-/** @param {import(".").NS } ns */
+/** @param {import("..").NS } ns */
 export async function main(ns) {
     const target = ns.args[0];
 
