@@ -12,13 +12,16 @@ export async function main(ns) {
     l.forEach((item) => {
       const serv = ns.getServer(item);
       const money = ns.formatNumber(serv.moneyAvailable);
-      const run = serv.ramUsed > 0 ? '🖥️' : ' ';
+      const money2 = ns.formatNumber(serv.moneyMax);      
+      const run = serv.ramUsed > 0 ? '🖥️' : serv.maxRam < 1 ? '🦆' : ' ';
       const lvl = serv.requiredHackingSkill;
+      
       const bd = serv.backdoorInstalled
-        ? "👑"
+        ? "🚪"
         : serv.hasAdminRights
         ? "🔑"
         : `🔒(${serv.numOpenPortsRequired})`;
+
       const col = SPECIAL_HOSTS.find((e) => e === item)
         ? C.magenta
         : serv.backdoorInstalled
@@ -26,13 +29,15 @@ export async function main(ns) {
         : serv.hasAdminRights
         ? C.white
         : C.black;
+
       const stock = STOCK_HOST_COLLECTION.find((e) => e.host === item) || {
         sym: "    ",
       };
-      output += `${col}  ${pad(bd, 6)} ${pad(lvl, 6)}${pad(stock.sym, 6)}${pad(
+
+      output += `${col}  ${run} ${pad(bd, 6)} ${pad(lvl, 6)}${pad(stock.sym, 6)}${pad(
         item,
         18
-      )}${pad(money, 15, "$", false)} ${run} ${C.reset}\n`;
+      )}${pad(money, 15, "$", false)} ${pad(money2, 10, "$", false)} ${C.reset}\n`;
     });
 
     ns.print(output);
