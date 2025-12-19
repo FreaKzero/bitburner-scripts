@@ -1,21 +1,29 @@
-import { pad } from "../lib/utils";
+import { getArgs, pad } from "../lib/utils";
 import { deepscan } from "../lib/scan";
 import { C, SPECIAL_HOSTS, STOCK_HOST_COLLECTION } from "../lib/const";
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
-  ns.ui.openTail("bin/lsnet.js");
+  ns.ui.openTail();
+  ns.ui.resizeTail(800, 800);
+  ns.atExit(() => {
+    ns.ui.closeTail();
+  });
+
+  const { sort, ducks, dir } = getArgs(ns, {
+    sort: false,
+    ducks: true,
+    dir: 'asc'
+  });
+
   const render = () => {
-    const l = deepscan(ns);
     let output = "\n";
 
-    l.forEach((item) => {
+    const list = deepscan(ns).map((item) => {
       const serv = ns.getServer(item);
-      const money = ns.formatNumber(serv.moneyAvailable);
-      const money2 = ns.formatNumber(serv.moneyMax);      
-      const run = serv.ramUsed > 0 ? '🖥️' : serv.maxRam < 1 ? '🦆' : ' ';
+      const run = serv.ramUsed > 0 ? "🖥️" : serv.maxRam < 1 ? "🦆" : " ";
       const lvl = serv.requiredHackingSkill;
-      
+
       const bd = serv.backdoorInstalled
         ? "🚪"
         : serv.hasAdminRights
@@ -34,10 +42,46 @@ export async function main(ns) {
         sym: "    ",
       };
 
-      output += `${col}  ${run} ${pad(bd, 6)} ${pad(lvl, 6)}${pad(stock.sym, 6)}${pad(
-        item,
-        18
-      )}${pad(money, 15, "$", false)} ${pad(money2, 10, "$", false)} ${C.reset}\n`;
+      return {
+        host: item,
+        money: serv.moneyAvailable,
+        moneyMax: serv.moneyMax,
+        exec: run,
+        hacklvl: lvl,
+        indicator: bd,
+        col: col,
+        symbol: stock.sym,
+      };
+    });
+
+    let view = list;
+
+    if (!ducks) {
+      view = view.filter((a) => a.exec !== "🦆");
+    }
+
+    if (sort === "level") {
+      view = view.sort((a, b) => dir.toLowerCase() === 'asc' ? a.hacklvl - b.hacklvl : b.hacklvl - a.hacklvl);
+    }
+
+    if (sort === "money") {
+      view = view.sort((a, b) => dir.toLowerCase() === 'asc' ? a.money - b.money : b.money - a.money);
+    }
+
+    view.forEach((a) => {
+
+      const money = ns.formatNumber(a.money);
+      const moneyMax = ns.formatNumber(a.moneyMax);
+
+      output += `${a.col}  ${a.exec} ${pad(a.indicator, 6)} ${pad(
+        a.hacklvl,
+        6
+      )}${pad(a.symbol, 6)}${pad(a.host, 18)}${pad(
+        money,
+        15,
+        "$",
+        false
+      )} ${pad(moneyMax, 10, "$", false)} ${C.reset}\n`;
     });
 
     ns.print(output);
