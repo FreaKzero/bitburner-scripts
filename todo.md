@@ -5,13 +5,19 @@
 ### Research
 - Buying Hardware via scripting ?
 - ability to communicate ? Sockets ? Messaging ?
+- Code Contracts
+- Stock Market
 
 ### Todo:
-- [x] Share RAM via ns.share to a faction
-- [x] share.js
-- [x] threads.js
-- [x] Monitor program
-- [x] Hacknet Manager
-- [x] Server Manager
-- [] Hardware Manager
+- [] Stocks
 
+
+fix contracts size
+fix auto size
+maybe save them in const
+
+Boot: 
+1. contracts
+2. lsnet
+3. cracknet
+4. attack noodles

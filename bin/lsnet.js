@@ -10,10 +10,11 @@ export async function main(ns) {
     ns.ui.closeTail();
   });
 
-  const { sort, ducks, dir } = getArgs(ns, {
+  const { sort, ducks, dir, h } = getArgs(ns, {
     sort: false,
     ducks: true,
-    dir: 'asc'
+    dir: 'asc',
+    h: null
   });
 
   const render = () => {
@@ -21,7 +22,7 @@ export async function main(ns) {
 
     const list = deepscan(ns).map((item) => {
       const serv = ns.getServer(item);
-      const run = serv.ramUsed > 0 ? "🖥️" : serv.maxRam < 1 ? "🦆" : " ";
+      const run = serv.ramUsed > 0 ? "🖥️" : serv.maxRam < 1 ? "🦆" : "  ";
       const lvl = serv.requiredHackingSkill;
 
       const bd = serv.backdoorInstalled
@@ -30,13 +31,17 @@ export async function main(ns) {
         ? "🔑"
         : `🔒(${serv.numOpenPortsRequired})`;
 
-      const col = SPECIAL_HOSTS.find((e) => e === item)
+      let col = SPECIAL_HOSTS.find((e) => e === item)
         ? C.magenta
         : serv.backdoorInstalled
         ? C.yellow
         : serv.hasAdminRights
         ? C.white
         : C.black;
+
+      if (h && h === item) {
+        col = C.brightGreen
+      }
 
       const stock = STOCK_HOST_COLLECTION.find((e) => e.host === item) || {
         sym: "    ",

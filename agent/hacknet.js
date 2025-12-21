@@ -1,9 +1,20 @@
-import { disableLogs } from "../lib/utils";
+import { disableLogs, fromFormat, getArgs } from "../lib/utils";
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
   const HACKNET_PREFIX = "hacknet-node-";
   disableLogs(ns, ["sleep"]);
+  ns.ui.openTail();
+  ns.ui.setTailTitle("Hacknet Upgrade Agent");
+
+  const startMoney = ns.getPlayer().money;
+
+  let { budget } = getArgs(ns, {
+    budget: null,
+  });
+
+  budget = budget ? fromFormat(budget) : startMoney;
+
   const getHacknetCollection = () => {
     const collection = [];
 
@@ -38,28 +49,24 @@ export async function main(ns) {
 
     for (var i = 0; i < modemax; i++) {
       if (CHECK[mode](node.id, i) > budget) {
-       break;
+        break;
       }
     }
-     return i - 1;
 
+    return modemax === i ? i : i - 1;
   };
 
-  ns.ui.openTail("agent/hacknet.js");
-  ns.ui.setTailTitle('Hacknet Upgrade Agent');
-
   const getBudget = () => {
-    return ns.getPlayer().money;
-  }
-  
+    const money = ns.getPlayer().money;
+    return money + budget - startMoney;
+  };
+
   while (true) {
     ns.clearLog();
     const nodes = getHacknetCollection();
     const nodePrice = ns.hacknet.getPurchaseNodeCost();
 
-    let O = `CURRENT BUDGET: $${ns.formatNumber(
-      getBudget()
-    )}\n`;
+    let O = `CURRENT BUDGET: $${ns.formatNumber(getBudget())}\n`;
 
     if (nodes.length < 1) {
       if (nodePrice < getBudget()) {
@@ -89,6 +96,6 @@ export async function main(ns) {
       }
     }
     ns.print(O);
-    await ns.sleep(30000);
+    await ns.sleep(2500);
   }
 }

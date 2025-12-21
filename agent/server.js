@@ -1,8 +1,15 @@
-import { disableLogs } from "../lib/utils";
+import { disableLogs, fromFormat, getArgs } from "../lib/utils";
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
   disableLogs(ns, ["getServerMaxRam", "sleep", "upgradePurchasedServer"]);
+  const startMoney = ns.getPlayer().money;
+
+  let { budget } = getArgs(ns, {
+    budget: null,
+  });
+
+  budget = budget ? fromFormat(budget) : startMoney;
 
   const SERVER_PREFIX = "frk-server-";
   const SERVER_NEW_RAM = 8;
@@ -35,10 +42,11 @@ export async function main(ns) {
   };
 
   const getBudget = () => {
-    return ns.getPlayer().money;
+    const money = ns.getPlayer().money;
+    return money + budget - startMoney;
   };
 
-  ns.ui.openTail("agent/server.js");
+  ns.ui.openTail();
   ns.ui.setTailTitle("Server Upgrade Agent");
 
   while (true) {
@@ -66,6 +74,6 @@ export async function main(ns) {
     }
 
     ns.print(O);
-    await ns.sleep(20000);
+    await ns.sleep(2500);
   }
 }

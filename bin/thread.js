@@ -1,4 +1,3 @@
-import { DISTFILES } from "../lib/const";
 import { getThreads } from "../lib/utils";
 
 /** @param {import("..").NS } ns */
