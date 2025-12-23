@@ -24,7 +24,7 @@ export async function main(ns) {
   const sRam = ns.getScriptRam("dist/auto.js", 'home');
   const threads = Math.floor(aRam / sRam);
   ns.exec("dist/auto.js", "home", threads || 1, "n00dles");
-  // cracknet routine
+
   let U = `${C.red} 💥 Attacking n00dles ...${C.reset}`;
   U += `
        .@@@@@@@@@@@@@@@@@.   
@@ -52,6 +52,5 @@ export async function main(ns) {
 `;
 
 ns.tprint(U);
-
 ns.exec('bin/logs.js', 'home');
 }
