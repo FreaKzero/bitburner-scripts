@@ -18,7 +18,7 @@ export async function main(ns) {
   ns.exec("bin/cracknet.js", 'home');
   ns.tprint(O);
 
-  ns.sleep(3000);
+  await ns.sleep(3000);
   ns.exec('bin/distribute.js', 'home', 1, 'script=dist/auto.js', 'host=n00dles')
   const aRam = ns.getServerMaxRam("home") - ns.getServerUsedRam("home");
   const sRam = ns.getScriptRam("dist/auto.js", 'home');

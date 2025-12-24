@@ -1,4 +1,4 @@
-import { findElement, goMap, goSidebar } from "./lib/ui";
+import { findElement, goMap, goSidebar } from "../lib/ui";
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
