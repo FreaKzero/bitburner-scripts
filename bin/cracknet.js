@@ -1,28 +1,16 @@
+import { DARKWEB_PROGRAMS } from "../lib/const";
 import { deepscan } from "../lib/scan";
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
   let O = ``;
 
-  async function useHacks(host) {
-    if (ns.fileExists("BruteSSH.exe", "home")) {
-      ns.brutessh(host);
-    }
-
-    if (ns.fileExists("FTPCrack.exe", "home")) {
-      ns.ftpcrack(host);
-    }
-
-    if (ns.fileExists("relaySMTP.exe", "home")) {
-      ns.relaysmtp(host);
-    }
-
-    if (ns.fileExists("HTTPWorm.exe", "home")) {
-      ns.httpworm(host)
-    }
-
-    if (ns.fileExists("SQLInject.exe", "home")) {
-      ns.sqlinject(host);
+  function useHacks(host) {
+    for (const {program} of DARKWEB_PROGRAMS) {
+      const exec = program.slice(0, -4).toLowerCase();
+      if (ns.fileExists(program)) {
+        ns[exec](host, 'home');
+      }
     }
   }
 
