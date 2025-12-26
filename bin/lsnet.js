@@ -5,26 +5,38 @@ import { C, SPECIAL_HOSTS, STOCK_HOST_COLLECTION } from "../lib/const";
 /** @param {import("..").NS } ns */
 export async function main(ns) {
   ns.ui.openTail();
-  ns.ui.resizeTail(800, 800);
+  ns.ui.resizeTail(720, 800);
   ns.atExit(() => {
     ns.ui.closeTail();
   });
 
   const attacked = state(ns, "attack");
 
-  const { sort, ducks, dir, h } = getArgs(ns, {
+  const { own, sort, ducks, dir } = getArgs(ns, {
     sort: false,
     ducks: true,
     dir: "asc",
-    h: null,
+    own: false,
   });
 
   const render = () => {
     let output = "\n";
+    let list = deepscan(ns);
+    if (!own) {
+      // TODO make configuration in const
+      list = list.filter((a) => !a.includes("frk-server-"));
+    }
 
-    const list = deepscan(ns).map((item) => {
+    list = list.map((item) => {
       const serv = ns.getServer(item);
-      const run = serv.ramUsed > 0 ? "🖥️" : serv.maxRam < 1 ? item === attacked ? "💥" : "🦆" : "  ";
+      const run =
+        serv.ramUsed > 0
+          ? "🖥️"
+          : serv.maxRam < 1
+          ? item === attacked
+            ? "💥"
+            : "🦆"
+          : "  ";
       const lvl = serv.requiredHackingSkill;
 
       const bd = serv.backdoorInstalled
@@ -43,10 +55,6 @@ export async function main(ns) {
         ? C.white
         : C.black;
 
-      if (h && h === item) {
-        col = C.brightGreen;
-      }
-
       const stock = STOCK_HOST_COLLECTION.find((e) => e.host === item) || {
         sym: "    ",
       };
@@ -63,14 +71,12 @@ export async function main(ns) {
       };
     });
 
-    let view = list;
-
     if (!ducks) {
-      view = view.filter((a) => a.exec !== "🦆");
+      list = list.filter((a) => a.exec !== "🦆");
     }
 
     if (sort === "level") {
-      view = view.sort((a, b) =>
+      list = list.sort((a, b) =>
         dir.toLowerCase() === "asc"
           ? a.hacklvl - b.hacklvl
           : b.hacklvl - a.hacklvl
@@ -78,12 +84,12 @@ export async function main(ns) {
     }
 
     if (sort === "money") {
-      view = view.sort((a, b) =>
+      list = list.sort((a, b) =>
         dir.toLowerCase() === "asc" ? a.money - b.money : b.money - a.money
       );
     }
 
-    view.forEach((a) => {
+    list.forEach((a) => {
       const money = ns.formatNumber(a.money);
       const moneyMax = ns.formatNumber(a.moneyMax);
 

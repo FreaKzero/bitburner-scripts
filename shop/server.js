@@ -1,9 +1,9 @@
 import { fromFormat, getArgs } from "../lib/utils";
-import {C} from '../lib/const';
+import { C } from "../lib/const";
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
-  ns.disableLog('ALL');
+  ns.disableLog("ALL");
   const startMoney = ns.getPlayer().money;
 
   let { budget } = getArgs(ns, {
@@ -18,16 +18,11 @@ export async function main(ns) {
   const numServer = ns.getPurchasedServers().length;
   const maxServer = ns.getPurchasedServerLimit();
 
-  if (numServer >= maxServer) {
-    ns.print(`Maximum of Purchaseable Servers reached`);
-    ns.exit();
-  }
-
   const getServerCollection = () => {
     return ns.getPurchasedServers().map((host) => {
       return {
         name: host,
-        ram: ns.getServerMaxRam(host)
+        ram: ns.getServerMaxRam(host),
       };
     });
   };
@@ -51,12 +46,10 @@ export async function main(ns) {
 
   while (true) {
     const AllServers = getServerCollection();
-    const servers = AllServers.filter(
-      (a) => a.ram < MAXRAM
-    );
+    const servers = AllServers.filter((a) => a.ram < MAXRAM);
 
     let O = `CURRENT BUDGET: $${ns.formatNumber(getBudget())}\n`;
-
+ 
     if (!servers.length) {
       if (ns.getPurchasedServerCost(SERVER_NEW_RAM) < getBudget()) {
         ns.purchaseServer(
@@ -77,10 +70,19 @@ export async function main(ns) {
     for (const server of AllServers) {
       const col = server.ram < MAXRAM ? C.yellow : C.green;
       const icon = server.ram < MAXRAM ? "💸" : "✔️";
-      O += `${col}${icon}\t${server.name}\tRAM:${ns.formatRam(server.ram)}${C.reset}\n`
+      O += `${col}${icon}\t${server.name}\tRAM:${ns.formatRam(server.ram)}${
+        C.reset
+      }\n`;
     }
     ns.clearLog();
     ns.print(O);
-    await ns.sleep(2500);
+
+     if (numServer >= maxServer) {
+      ns.print(`Maximum of Purchaseable Servers reached`);
+      ns.exit();
+    }
+
+
+    await ns.sleep(1500);
   }
 }
