@@ -69,7 +69,6 @@ export async function main(ns) {
 
     // TODO: Check Budget and MAX_RAM
     for (const server of servers) {
-
       const purRam = calcUpgrade(server, getBudget());
       ns.upgradePurchasedServer(server.name, purRam);
       O += `\n${server.name}\n`;
