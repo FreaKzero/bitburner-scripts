@@ -1,4 +1,4 @@
-import { getArgs, pad } from "../lib/utils";
+import { state, getArgs, pad } from "../lib/utils";
 import { deepscan } from "../lib/scan";
 import { C, SPECIAL_HOSTS, STOCK_HOST_COLLECTION } from "../lib/const";
 
@@ -10,11 +10,13 @@ export async function main(ns) {
     ns.ui.closeTail();
   });
 
+  const attacked = state(ns, "attack");
+
   const { sort, ducks, dir, h } = getArgs(ns, {
     sort: false,
     ducks: true,
-    dir: 'asc',
-    h: null
+    dir: "asc",
+    h: null,
   });
 
   const render = () => {
@@ -22,7 +24,7 @@ export async function main(ns) {
 
     const list = deepscan(ns).map((item) => {
       const serv = ns.getServer(item);
-      const run = serv.ramUsed > 0 ? "🖥️" : serv.maxRam < 1 ? "🦆" : "  ";
+      const run = serv.ramUsed > 0 ? "🖥️" : serv.maxRam < 1 ? item === attacked ? "💥" : "🦆" : "  ";
       const lvl = serv.requiredHackingSkill;
 
       const bd = serv.backdoorInstalled
@@ -35,12 +37,14 @@ export async function main(ns) {
         ? C.magenta
         : serv.backdoorInstalled
         ? C.yellow
+        : attacked === item
+        ? C.red
         : serv.hasAdminRights
         ? C.white
         : C.black;
 
       if (h && h === item) {
-        col = C.brightGreen
+        col = C.brightGreen;
       }
 
       const stock = STOCK_HOST_COLLECTION.find((e) => e.host === item) || {
@@ -66,15 +70,20 @@ export async function main(ns) {
     }
 
     if (sort === "level") {
-      view = view.sort((a, b) => dir.toLowerCase() === 'asc' ? a.hacklvl - b.hacklvl : b.hacklvl - a.hacklvl);
+      view = view.sort((a, b) =>
+        dir.toLowerCase() === "asc"
+          ? a.hacklvl - b.hacklvl
+          : b.hacklvl - a.hacklvl
+      );
     }
 
     if (sort === "money") {
-      view = view.sort((a, b) => dir.toLowerCase() === 'asc' ? a.money - b.money : b.money - a.money);
+      view = view.sort((a, b) =>
+        dir.toLowerCase() === "asc" ? a.money - b.money : b.money - a.money
+      );
     }
 
     view.forEach((a) => {
-
       const money = ns.formatNumber(a.money);
       const moneyMax = ns.formatNumber(a.moneyMax);
 

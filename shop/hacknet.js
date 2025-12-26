@@ -10,7 +10,7 @@ export async function main(ns) {
   const startMoney = ns.getPlayer().money;
 
   let { budget } = getArgs(ns, {
-    budget: null,
+    budget: undefined,
   });
 
   budget = budget ? fromFormat(budget) : startMoney;

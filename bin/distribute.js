@@ -1,6 +1,6 @@
 import { deepscan } from "../lib/scan";
 import { DISTFILES } from "../lib/const";
-import { getArgs } from "../lib/utils";
+import { getArgs, state } from "../lib/utils";
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
@@ -22,6 +22,7 @@ export async function main(ns) {
         const sRam = ns.getScriptRam(script);
         const threads = Math.floor(aRam / sRam);
         const rattack = host || serv;
+        state(ns, 'attack', rattack);
         ns.exec(script, serv, threads || 1, rattack);
       }
     }
