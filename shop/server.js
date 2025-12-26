@@ -1,12 +1,13 @@
-import { disableLogs, fromFormat, getArgs } from "../lib/utils";
+import { fromFormat, getArgs } from "../lib/utils";
+import {C} from '../lib/const';
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
-  disableLogs(ns, ["getServerMaxRam", "sleep", "upgradePurchasedServer"]);
+  ns.disableLog('ALL');
   const startMoney = ns.getPlayer().money;
 
   let { budget } = getArgs(ns, {
-    budget: null,
+    budget: undefined,
   });
 
   budget = budget ? fromFormat(budget) : startMoney;
@@ -14,7 +15,6 @@ export async function main(ns) {
   const SERVER_PREFIX = "frk-server-";
   const SERVER_NEW_RAM = 8;
   const MAXRAM = ns.getPurchasedServerMaxRam();
-
   const numServer = ns.getPurchasedServers().length;
   const maxServer = ns.getPurchasedServerLimit();
 
@@ -50,15 +50,14 @@ export async function main(ns) {
   ns.ui.setTailTitle("Server Upgrade Agent");
 
   while (true) {
-    ns.clearLog();
     const AllServers = getServerCollection();
     const servers = AllServers.filter(
-      (a) => a.ram !== MAXRAM
+      (a) => a.ram < MAXRAM
     );
+
     let O = `CURRENT BUDGET: $${ns.formatNumber(getBudget())}\n`;
 
     if (!servers.length) {
-      // TODO: check max ram purchase
       if (ns.getPurchasedServerCost(SERVER_NEW_RAM) < getBudget()) {
         ns.purchaseServer(
           `${SERVER_PREFIX}${AllServers.length}`,
@@ -67,14 +66,20 @@ export async function main(ns) {
       }
     }
 
-    // TODO: Check Budget and MAX_RAM
     for (const server of servers) {
       const purRam = calcUpgrade(server, getBudget());
+      if (server.ram >= purRam) {
+        ns.exit();
+      }
       ns.upgradePurchasedServer(server.name, purRam);
-      O += `\n${server.name}\n`;
-      O += `RAM:${server.ram}\n`;
     }
 
+    for (const server of AllServers) {
+      const col = server.ram < MAXRAM ? C.yellow : C.green;
+      const icon = server.ram < MAXRAM ? "💸" : "✔️";
+      O += `${col}${icon}\t${server.name}\tRAM:${ns.formatRam(server.ram)}${C.reset}\n`
+    }
+    ns.clearLog();
     ns.print(O);
     await ns.sleep(2500);
   }
