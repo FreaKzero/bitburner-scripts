@@ -4,16 +4,16 @@ import { disableLogs, fromFormat, getArgs } from "../lib/utils";
 export async function main(ns) {
   const HACKNET_PREFIX = "hacknet-node-";
   disableLogs(ns, ["sleep"]);
-  ns.ui.openTail();
-  ns.ui.setTailTitle("Hacknet Upgrade Agent");
-
   const startMoney = ns.getPlayer().money;
 
   let { budget } = getArgs(ns, {
     budget: undefined,
   });
-
+  
   budget = budget ? fromFormat(budget) : startMoney;
+
+  ns.ui.openTail();
+  ns.ui.setTailTitle("Hacknet Upgrade Agent");
 
   const getHacknetCollection = () => {
     const collection = [];
@@ -22,15 +22,14 @@ export async function main(ns) {
       const { ram, level, cores } = ns.hacknet.getNodeStats(i);
       collection.push({
         ram,
+        fram: ns.formatRam(ram),
         level,
         cores,
         name: `${HACKNET_PREFIX}${i}`,
         id: i,
       });
     }
-    return collection.filter(
-      (a) => a.level < 200 || a.ram < 64 || a.cores < 16
-    );
+    return collection;
   };
 
   const calcBuy = (node, mode, budget) => {
@@ -63,10 +62,15 @@ export async function main(ns) {
 
   while (true) {
     ns.clearLog();
-    const nodes = getHacknetCollection();
+    const servers = getHacknetCollection();
+    const nodes = servers.filter(
+      (a) => a.level < 200 || a.ram < 64 || a.cores < 16
+    );
+
     const nodePrice = ns.hacknet.getPurchaseNodeCost();
 
-    let O = `CURRENT BUDGET: $${ns.formatNumber(getBudget())}\n`;
+    let O = `CURRENT BUDGET: $${ns.formatNumber(getBudget())}\n\n`;
+    O += `NAME\t\tLEVEL\tRAM\tCORES\n-------------------------------------\n`;
 
     if (nodes.length < 1) {
       if (nodePrice < getBudget()) {
@@ -75,26 +79,30 @@ export async function main(ns) {
     }
 
     for (const node of nodes) {
-      O += `\n${node.name} \n`;
       const l = calcBuy(node, "level", getBudget());
-      O += `Levels:\t${node.level} \n`;
+
       if (node.level < 200 && getBudget() > 0) {
         ns.hacknet.upgradeLevel(node.id, l);
       }
 
       const r = calcBuy(node, "ram", getBudget());
-      O += `RAM:\t${node.ram} \n`;
 
       if (node.ram < 64 && getBudget() > 0) {
         ns.hacknet.upgradeRam(node.id, r);
       }
 
       const c = calcBuy(node, "cores", getBudget());
-      O += `CORES:\t${node.cores}\n`;
+
       if (node.cores < 16 && getBudget() > 0) {
         ns.hacknet.upgradeCore(node.id, c);
       }
+
     }
+
+    for (const s of servers) {
+      O += `${s.name}\t${s.level}\t${s.fram}\t   ${s.cores}\n`
+    }
+
     ns.print(O);
     await ns.sleep(2500);
   }
