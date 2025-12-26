@@ -1,8 +1,7 @@
-import { findElement, goMap, goSidebar } from "../lib/ui";
+import { findElement, goLocation, goSidebar } from "../lib/ui";
 
-/** @param {import("..").NS } ns */
-export async function main(ns) {
-goMap(ns, 'Alpha Enterprises');
+export async function main() {
+goLocation('T');
 findElement('.MuiButtonBase-root', 'TOR router', true);
 goSidebar('Terminal');
 }

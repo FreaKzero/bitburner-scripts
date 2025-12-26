@@ -6,13 +6,7 @@ export async function main(ns) {
   ns.ui.resizeTail(680, 200);
 
   const pot = 15;
-
   const POT = pot / 10000;
-
-  /* const getBudget = () => {
-    const money = ns.getPlayer().money;
-    return money + budget - startMoney;
-  }; */
 
   while (true) {
     ns.clearLog();

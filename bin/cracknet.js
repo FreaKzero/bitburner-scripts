@@ -38,7 +38,7 @@ export async function main(ns) {
     ].reduce((p, acc) => acc + p, 0);
     
     if (!x.hasAdminRights && openPorts >= x.numOpenPortsRequired) {
-      `💥 Nuked: ${host}`
+      O += (`💥 Nuked: ${host}`);
       await ns.nuke(host);
     }
   }

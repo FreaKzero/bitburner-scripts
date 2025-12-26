@@ -1,20 +1,17 @@
-import Store from './lib/store';
+import { findElement, goTravel } from "./lib/ui";
+
+export function goLocation(where) {
+  goTravel("city");
+
+  const cities = document.querySelectorAll('[class*="location"]');
+  const find = Array.from(cities).find((a) => a.innerText.trim().toLowerCase() === where.toLowerCase());
+
+  if (find) {
+    find.click();
+  }
+}
 
 /** @param {import(".").NS } ns */
 export async function main(ns) {
-const wat = new Store(ns, 'data/wat.json');
-
-wat.setSchema({
-    test: 0,
-    test2: ''
-});
-
-wat.insert(() => {
-    return {
-        test: 30,
-        test2: 'teststring'
-    }
-})
-
-wat.insert(() => ({ test2: 'test2'}));
+ goTravel()   
 }

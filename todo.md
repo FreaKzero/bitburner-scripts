@@ -21,3 +21,7 @@ Boot:
 2. lsnet
 3. cracknet
 4. attack noodles
+
+
+
+first buy FOCUS => China

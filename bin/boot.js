@@ -12,7 +12,7 @@ export async function main(ns) {
   `;
   
   ns.exec("agent/contracts.js", "home");
-  ns.exec("agent/backdoor.js", "home");
+  //ns.exec("agent/backdoor.js", "home");
   ns.exec("bin/lsnet.js", "home");
   ns.exec("bin/cracknet.js", 'home');
   ns.tprint(O);

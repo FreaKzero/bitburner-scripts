@@ -27,7 +27,7 @@ export async function main(ns) {
     return ns.getPurchasedServers().map((host) => {
       return {
         name: host,
-        ram: ns.getServerMaxRam(host),
+        ram: ns.getServerMaxRam(host)
       };
     });
   };
@@ -53,11 +53,12 @@ export async function main(ns) {
     ns.clearLog();
     const AllServers = getServerCollection();
     const servers = AllServers.filter(
-      (a) => a.ram !== ns.getPurchasedServerMaxRam()
+      (a) => a.ram !== MAXRAM
     );
     let O = `CURRENT BUDGET: $${ns.formatNumber(getBudget())}\n`;
 
     if (!servers.length) {
+      // TODO: check max ram purchase
       if (ns.getPurchasedServerCost(SERVER_NEW_RAM) < getBudget()) {
         ns.purchaseServer(
           `${SERVER_PREFIX}${AllServers.length}`,
@@ -66,7 +67,9 @@ export async function main(ns) {
       }
     }
 
+    // TODO: Check Budget and MAX_RAM
     for (const server of servers) {
+
       const purRam = calcUpgrade(server, getBudget());
       ns.upgradePurchasedServer(server.name, purRam);
       O += `\n${server.name}\n`;
