@@ -1,6 +1,6 @@
-import { state, getArgs, pad } from "../lib/utils";
+import { state, getArgs, pad, C } from "../lib/utils";
 import { deepscan } from "../lib/scan";
-import { C, SPECIAL_HOSTS, STOCK_HOST_COLLECTION } from "../lib/const";
+import { SPECIAL_HOSTS, STOCK_HOST_COLLECTION } from "../lib/const";
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {

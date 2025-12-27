@@ -1,4 +1,4 @@
-import { C } from "../lib/const";
+import { C } from "../lib/utils";
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {

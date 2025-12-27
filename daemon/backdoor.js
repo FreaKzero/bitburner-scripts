@@ -1,5 +1,5 @@
-import {C, DARKWEB_PROGRAMS, SPECIAL_HOSTS} from '../lib/const';
-import { pad } from '../lib/utils';
+import {DARKWEB_PROGRAMS, SPECIAL_HOSTS} from '../lib/const';
+import { C, pad } from '../lib/utils';
 import {execTerm} from '../lib/ui';
 
 /** @param {import("..").NS } ns */

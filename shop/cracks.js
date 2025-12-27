@@ -1,4 +1,5 @@
-import { DARKWEB_PROGRAMS, C } from "../lib/const";
+import { DARKWEB_PROGRAMS } from "../lib/const";
+import {C} from '../lib/utils';
 import { execTerm } from "../lib/ui";
 
 /** @param {import("..").NS } ns */
