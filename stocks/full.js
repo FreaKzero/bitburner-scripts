@@ -33,7 +33,15 @@ export async function main(ns) {
 
   while (true) {
     ns.clearLog();
-    let O = `${C.yellow}Current Budget: $${ns.formatNumber(getBudget())} \n`;
+
+    let O = ``;
+    
+    if (buy) {
+      O += `${C.yellow}Current Budget: $${ns.formatNumber(getBudget())} \n`;
+    } else {
+      O += `${C.yellow}Watchmode (No Autobuy)\n`;
+    }
+
     O += ln;
     O += `${C.white}   SYM\t\t  POT\t    BOUGHT\t   CURRENT\t   PROFIT\t`;
     O += ln;
@@ -47,12 +55,12 @@ export async function main(ns) {
         const fcur = pad(ns.formatNumber(s.price), 8, "$", false);
         const fprofit = pad(ns.formatNumber(s.profit), 8, "$", false);
         const haveMoney = getBudget() > s.ablePrice;
-        const col = s.profit < 0 ? C.red : s.haveStocks ? C.green : C.white;
         const ignored = IGNORESTOCKS.includes(s.sym);
+        const col = s.profit < 0 ? C.red : s.haveStocks ? C.green : ignored ? C.black : C.white;
         const x = s.haveStocks ? '💸' : ignored ? '🚫' : '⌛';
         
         if (buy && !s.haveStocks && haveMoney && s.ableShares > 1000 && !ignored) {
-          ns.exec("stocks/handler.js", "home", 1, s.sym, s.ableShares);
+          ns.exec("stocks/broker.js", "home", 1, s.sym, s.ableShares);
         }
 
         O += `${col}${x} ${s.sym}\t\t${fpot}\t${fbought}\t${fcur}\t${fprofit}${C.reset}\t\n`;

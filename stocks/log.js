@@ -5,18 +5,18 @@ export async function main(ns) {
   const reset = ns.args[0] && ns.args[0].toLowerCase() === "reset";
 
   if (reset) {
-    ns.write('data/stocks.json', JSON.stringify([]), 'w');
-    ns.tprint('Stock Logs got reset');
+    ns.write("data/stocks.json", JSON.stringify([]), "w");
+    ns.tprint("Stock Logs got reset");
     ns.exit();
   }
 
   ns.disableLog("ALL");
   ns.ui.openTail();
   ns.ui.resizeTail(610, 450);
-  const ln = `${line(62, C.white)}${C.reset}\n`
+  const ln = `${line(62, C.white)}${C.reset}\n`;
 
   ns.clearLog();
-  const logs = reset ? [] : JSON.parse(ns.read("data/stocks.json")); 
+  const logs = reset ? [] : JSON.parse(ns.read("data/stocks.json"));
   let O = ln;
   O += `${C.white} SYM\t   PROFITS\t    LOSSES\t      DIFF\t  W/L\n`;
   O += ln;
@@ -44,11 +44,11 @@ export async function main(ns) {
     O += `${col} ${log.sym}\t${fprof}\t${floss}\t${fdiff}\t${fhits} ${C.reset}\n`;
   });
   O += ln;
-  O += ` SUM\t   ${C.green}${pad(ns.formatNumber(sumwin), 8, "$")}${
-    C.reset
-  }\t ${C.red}${pad(ns.formatNumber(sumloss), 8, "$")}${C.reset}\t   ${
-    C.white
-  }${pad(ns.formatNumber(sumdiff), 8, "$")}`;
+  const sl = `${C.red}${pad(ns.formatNumber(sumloss), 8, "$")}${C.reset}`;
+  const sw = `${C.green}${pad(ns.formatNumber(sumwin), 8, "$")}${C.reset}`;
+  const sd = `${C.white}${pad(ns.formatNumber(sumdiff), 8, "$")}${C.reset}`;
+
+  O += ` SUM \t ${sw}\t${sl}\t${sd}\n`;
   O += ln;
   ns.print(O);
 }
