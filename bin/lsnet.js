@@ -1,6 +1,7 @@
 import { state, getArgs, pad, C } from "../lib/utils";
 import { deepscan } from "../lib/scan";
 import { SPECIAL_HOSTS, STOCK_HOST_COLLECTION } from "../lib/const";
+import cfg from '../etc/names.js';
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
@@ -10,8 +11,6 @@ export async function main(ns) {
     ns.ui.closeTail();
   });
 
-  const attacked = state(ns, "attack");
-
   const { own, sort, ducks, dir } = getArgs(ns, {
     sort: false,
     ducks: true,
@@ -20,11 +19,11 @@ export async function main(ns) {
   });
 
   const render = () => {
+    const attacked = state(ns, "attack");
     let output = "\n";
     let list = deepscan(ns);
     if (!own) {
-      // TODO make configuration in const
-      list = list.filter((a) => !a.includes("frk-server-"));
+      list = list.filter((a) => !a.includes(cfg.prefixServer));
     }
 
     list = list.map((item) => {
@@ -45,7 +44,7 @@ export async function main(ns) {
         ? "🔑"
         : `🔒(${serv.numOpenPortsRequired})`;
 
-      let col = SPECIAL_HOSTS.find((e) => e === item)
+      let col = SPECIAL_HOSTS.find((e) => e.host === item)
         ? C.magenta
         : serv.backdoorInstalled
         ? C.yellow

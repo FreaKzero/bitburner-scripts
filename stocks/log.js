@@ -2,13 +2,21 @@ import { C, pad, line } from "../lib/utils";
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
+  const reset = ns.args[0] && ns.args[0].toLowerCase() === "reset";
+
+  if (reset) {
+    ns.write('data/stocks.json', JSON.stringify([]), 'w');
+    ns.tprint('Stock Logs got reset');
+    ns.exit();
+  }
+
   ns.disableLog("ALL");
   ns.ui.openTail();
   ns.ui.resizeTail(610, 450);
   const ln = `${line(62, C.white)}${C.reset}\n`
 
   ns.clearLog();
-  const logs = JSON.parse(ns.read("data/stocks.json"));
+  const logs = reset ? [] : JSON.parse(ns.read("data/stocks.json")); 
   let O = ln;
   O += `${C.white} SYM\t   PROFITS\t    LOSSES\t      DIFF\t  W/L\n`;
   O += ln;

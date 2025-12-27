@@ -1,8 +1,8 @@
 import { disableLogs, fromFormat, getArgs } from "../lib/utils";
+import cfg from '../etc/names';
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
-  const HACKNET_PREFIX = "hacknet-node-";
   disableLogs(ns, ["sleep"]);
   const startMoney = ns.getPlayer().money;
 
@@ -25,7 +25,7 @@ export async function main(ns) {
         fram: ns.formatRam(ram),
         level,
         cores,
-        name: `${HACKNET_PREFIX}${i}`,
+        name: `${cfg.prefixHacknet}${i}`,
         id: i,
       });
     }

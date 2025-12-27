@@ -1,4 +1,6 @@
 import { C, fromFormat, getArgs } from "../lib/utils";
+import cfg from '../etc/names';
+
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
@@ -11,7 +13,6 @@ export async function main(ns) {
 
   budget = budget ? fromFormat(budget) : startMoney;
 
-  const SERVER_PREFIX = "frk-server-";
   const SERVER_NEW_RAM = 8;
   const MAXRAM = ns.getPurchasedServerMaxRam();
   const numServer = ns.getPurchasedServers().length;
@@ -52,7 +53,7 @@ export async function main(ns) {
     if (!servers.length) {
       if (ns.getPurchasedServerCost(SERVER_NEW_RAM) < getBudget()) {
         ns.purchaseServer(
-          `${SERVER_PREFIX}${AllServers.length}`,
+          `${cfg.prefixServer}${AllServers.length}`,
           SERVER_NEW_RAM
         );
       }
