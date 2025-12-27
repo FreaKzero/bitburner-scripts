@@ -11,8 +11,12 @@ export async function main(ns) {
     ignore: null
   });
 
+  ns.atExit(() => {
+    ns.ui.closeTail();
+  });
+
   const startMoney = ns.getPlayer().money;
-  const myBudget = fromFormat(budget);
+  const BUDGET = fromFormat(budget);
   let IGNORESTOCKS = [];
 
   if (ignore) {
@@ -20,21 +24,21 @@ export async function main(ns) {
   }
 
   ns.ui.openTail();
-  ns.ui.resizeTail(680, 200);
+  ns.ui.resizeTail(660, 300);
 
   const POT = pot / 100;
-  const ln = `${line(60, C.white)}${C.reset}\n`;
+  const ln = `${line(67, C.white)}${C.reset}\n`;
 
   const getBudget = () => {
     const money = ns.getPlayer().money;
-    return money + myBudget - startMoney;
+    return money + BUDGET - startMoney;
   };
 
   while (true) {
     ns.clearLog();
-    let O = `${C.yellow}Current Budget: ${ns.formatNumber(getBudget())} \n`;
+    let O = `${C.yellow}Current Budget: $${ns.formatNumber(getBudget())} \n`;
     O += ln;
-    O += `${C.white} SYM\t  POT\t   BOUGHT\t   CURRENT\t   PROFIT\t`;
+    O += `${C.white}   SYM\t\t  POT\t    BOUGHT\t   CURRENT\t   PROFIT\t`;
     O += ln;
 
     const list = getStockCollection(ns, POT);
@@ -54,7 +58,7 @@ export async function main(ns) {
           ns.exec("stocks/handler.js", "home", 1, s.sym, s.ableShares);
         }
 
-        O += `${col}${x} ${s.sym}\t${fpot}\t${fbought}\t${fcur}\t${fprofit}${C.reset}\t\n`;
+        O += `${col}${x} ${s.sym}\t\t${fpot}\t${fbought}\t${fcur}\t${fprofit}${C.reset}\t\n`;
       });
       O += ln;
       ns.print(O);
