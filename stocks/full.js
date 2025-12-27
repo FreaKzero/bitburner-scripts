@@ -1,32 +1,65 @@
 import { getStockCollection } from "../lib/stonks";
-import { fromFormat } from "../lib/utils";
+import { fromFormat, line, C, pad, getArgs } from "../lib/utils";
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
-  ns.disableLog('ALL');
+  ns.disableLog("ALL");
+  const { buy, pot, budget, ignore } = getArgs(ns, {
+    buy: true,
+    pot: 0.15,
+    budget: ns.getPlayer().money,
+    ignore: null
+  });
+
+  const startMoney = ns.getPlayer().money;
+  const myBudget = fromFormat(budget);
+  let IGNORESTOCKS = [];
+
+  if (ignore) {
+    IGNORESTOCKS = ignore.split(',').map(a => a.trim());  
+  }
+
   ns.ui.openTail();
   ns.ui.resizeTail(680, 200);
-  const buy = true;
-  const pot = 15;
-  const POT = pot / 10000;
-  const minMoney = fromFormat("300.000m");
+
+  const POT = pot / 100;
+  const ln = `${line(60, C.white)}${C.reset}\n`;
+
+  const getBudget = () => {
+    const money = ns.getPlayer().money;
+    return money + myBudget - startMoney;
+  };
 
   while (true) {
     ns.clearLog();
+    let O = `${C.yellow}Current Budget: ${ns.formatNumber(getBudget())} \n`;
+    O += ln;
+    O += `${C.white} SYM\t  POT\t   BOUGHT\t   CURRENT\t   PROFIT\t`;
+    O += ln;
+
     const list = getStockCollection(ns, POT);
 
     if (list.length) {
       list.forEach((s) => {
-        const haveMoney = ns.getPlayer().money > minMoney;
-
-        if (buy && (!s.haveStocks && haveMoney && s.ableShares > 1000)) {
+        const fpot = pad(ns.formatPercent(s.potential));
+        const fbought = pad(ns.formatNumber(s.longPrice), 8, "$", false);
+        const fcur = pad(ns.formatNumber(s.price), 8, "$", false);
+        const fprofit = pad(ns.formatNumber(s.profit), 8, "$", false);
+        const haveMoney = getBudget() > s.ablePrice;
+        const col = s.profit < 0 ? C.red : s.haveStocks ? C.green : C.white;
+        const ignored = IGNORESTOCKS.includes(s.sym);
+        const x = s.haveStocks ? '💸' : ignored ? '🚫' : '⌛';
+        
+        if (buy && !s.haveStocks && haveMoney && s.ableShares > 1000 && !ignored) {
           ns.exec("stocks/handler.js", "home", 1, s.sym, s.ableShares);
         }
-        
-        ns.print(`${s.sym}\t${s.profit}\t${s.forecast}`);
+
+        O += `${col}${x} ${s.sym}\t${fpot}\t${fbought}\t${fcur}\t${fprofit}${C.reset}\t\n`;
       });
+      O += ln;
+      ns.print(O);
     } else {
-      ns.print('Waiting for potential Stocks')
+      ns.print(`${C.magenta}\t\t   👁️ Waiting for potential Stocks\n\n\n\n`);
     }
 
     await ns.stock.nextUpdate();
