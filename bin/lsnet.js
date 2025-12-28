@@ -10,7 +10,7 @@ export async function main(ns) {
   ns.ui.resizeTail(850, 800);
 
   const { own, sort, ducks, dir } = getArgs(ns, {
-    sort: false,
+    sort: 'level',
     ducks: true,
     dir: "asc",
     own: false,
