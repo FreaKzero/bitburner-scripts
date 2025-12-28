@@ -1,30 +1,33 @@
 import { C } from "../lib/utils";
+import { findElement, goCity } from "../lib/ui";
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
   ns.ui.clearTerminal();
   ns.killall();
+
+  goCity('FoodNStuff');
+  findElement('.MuiButtonBase-root', 'part-time employee', true);
+  findElement('.MuiButtonBase-root', 'work', true);
+
   let O = `
-  ${C.white} 🟢 Starting Contracts Agent ...${C.reset}
-  ${C.white} 🟢 Starting Backdoors Agent ...${C.reset}
+  ${C.white} 🟢 Starting Contracts Daemon ...${C.reset}
   ${C.white} 🟢 Starting Netmonitor ...${C.reset}
+  ${C.white} 🟢 Starting Crackshop ...${C.reset}
   ${C.red} 💣 Cracking Hosts ...${C.reset}
   `;
   
-  ns.exec("daemon/contracts.js", "home");
-  //ns.exec("daemon/backdoor.js", "home");
-  ns.exec("bin/lsnet.js", "home");
   ns.exec("bin/cracknet.js", 'home');
+  ns.exec("daemon/contracts.js", "home");
+  ns.exec("shop/cracks.js", "home");
+
   ns.tprint(O);
 
   await ns.sleep(3000);
-  ns.exec('bin/distribute.js', 'home', 1, 'script=dist/auto.js', 'host=n00dles')
-  const aRam = ns.getServerMaxRam("home") - ns.getServerUsedRam("home");
-  const sRam = ns.getScriptRam("dist/auto.js", 'home');
-  const threads = Math.floor(aRam / sRam);
-  ns.exec("dist/auto.js", "home", threads || 1, "n00dles");
+  ns.exec('bin/deploy.js', 'home', 1, 'script=dist/auto.js', 'host=n00dles')
 
-  let U = `${C.red} 💥 Attacking n00dles ...${C.reset}`;
+  let U = `\n${C.red} 💥 Attacking n00dles ...${C.reset}\n`;
+  U += `${C.white} 🌭 Find a Job ... ${C.reset}\n`;
   U += `
        .@@@@@@@@@@@@@@@@@.   
          .@@@@@@@@@@@@@.            

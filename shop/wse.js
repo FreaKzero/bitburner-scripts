@@ -1,9 +1,7 @@
 import { findElement, goLocation, goSidebar } from "../lib/ui";
 
 export async function main() {
-    goLocation('T');
-    findElement('.MuiButtonBase-root', 'TOR router', true);
+    goLocation('$');
+    findElement('.MuiButtonBase-root', 'WSE Account', true);
     goSidebar('Terminal');
 }
-
-
