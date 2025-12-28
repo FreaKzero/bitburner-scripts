@@ -6,35 +6,37 @@ import cfg from "./etc/stocks";
 export async function main(ns) {
   ns.disableLog("sleep");
   ns.ui.openTail();
+
+  const debug = false;
+
   const FORECAST_SCORE = {
-  '---': 0.1,
-  '--':  0.25,
-  '-':   0.4,
-  '+':   0.6,
-  '++':  0.75,
-  '+++': 0.9
-}
+    "---": 0.1,
+    "--": 0.25,
+    "-": 0.4,
+    "+": 0.6,
+    "++": 0.75,
+    "+++": 0.9,
+  };
 
-const MAX_VOLATILITY = 5
+  const MAX_VOLATILITY = 5;
 
-function normalizeVolatility(vol) {
-  return Math.min(vol / MAX_VOLATILITY, 1)
-}
+  function normalizeVolatility(vol) {
+    return Math.min(vol / MAX_VOLATILITY, 1);
+  }
 
-function calcWeightedScore(forecast, volatility) {
-  const forecastScore = FORECAST_SCORE[forecast] ?? 0.5
-  const volNorm = normalizeVolatility(volatility)
+  function calcWeightedScore(forecast, volatility) {
+    const forecastScore = FORECAST_SCORE[forecast] ?? 0.5;
+    const volNorm = normalizeVolatility(volatility);
 
-  return forecastScore * (1 + volNorm)
-}
+    return forecastScore * (1 + volNorm);
+  }
 
-
-  const regex =
+  const rgx =
     /^(.+?)\s{2,}([A-Z]+)\s+-\s+\$([\d.]+[kmb]?)\s+-\s+Volatility:\s+([\d.]+)%\s+-\s+Price Forecast:\s+([+-]+)$/;
 
   goSidebar("stock market");
   function parseLine(line, element) {
-    const match = line.match(regex);
+    const match = line.match(rgx);
     if (!match) return null;
 
     const price = fromFormat(match[3]);
@@ -71,14 +73,18 @@ function calcWeightedScore(forecast, volatility) {
   }
 
   ns.atExit(() => {
-    readAll().filter(a => a.haveStocks).forEach((a) => ns.stock.sellStock(a.sym, a.longShares));
-  })
+    readAll()
+      .filter((a) => a.haveStocks)
+      .forEach((a) => ns.stock.sellStock(a.sym, a.longShares));
+  });
 
   while (true) {
     ns.clearLog();
     const stocks = readAll().sort((a, b) => b.score - a.score);
-    console.clear();
-    console.table(stocks);
+    if (debug) {
+      console.clear();
+      console.table(stocks);
+    }
 
     for (var stock of stocks) {
       if (!stock.haveStocks && stock.score > 0.91 && stock.ableShares >= 1000) {
@@ -91,15 +97,14 @@ function calcWeightedScore(forecast, volatility) {
         stock.e.click();
       }
     }
-      const ui = stocks
-        .filter((a) => a.haveStocks)
-        .map((a) => {
-          return `${a.sym}\t${a.score}\t${a.longShares}`;
-        });
-      
-      ns.print(ui.join("\n"));
+    const ui = stocks
+      .filter((a) => a.haveStocks)
+      .map((a) => {
+        return `${a.sym}\t${a.score}\t${a.longShares}`;
+      });
 
-      await ns.stock.nextUpdate();
+    ns.print(ui.join("\n"));
 
+    await ns.stock.nextUpdate();
   }
 }

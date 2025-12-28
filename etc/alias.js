@@ -6,6 +6,7 @@ export function main() {
 unalias --all;
 alias -g fl1ght="run fl1ght.exe";
 alias -g nuke="run NUKE.exe;backdoor";
+alias go="run bin/go.js";
 alias stocks="stocks/full.js";
 alias shop="run bin/shop.js";
 alias focus="run bin/focus.js";

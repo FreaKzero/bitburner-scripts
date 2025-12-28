@@ -18,7 +18,7 @@ export async function main(ns) {
 
   ns.atExit(() => {
     const curStock = getStockInfo(ns, sym);
-    const x = new Store(ns, "data/stocks.json");
+    const x = new Store(ns, "var/stocks.json");
     x.setSchema({
       sym: sym,
       fails: 0,

@@ -5,7 +5,7 @@ export async function main(ns) {
   const reset = ns.args[0] && ns.args[0].toLowerCase() === "reset";
 
   if (reset) {
-    ns.write("data/stocks.json", JSON.stringify([]), "w");
+    ns.write("var/stocks.json", JSON.stringify([]), "w");
     ns.tprint("Stock Logs got reset");
     ns.exit();
   }
@@ -16,7 +16,7 @@ export async function main(ns) {
   const ln = `${line(62, C.white)}${C.reset}\n`;
 
   ns.clearLog();
-  const logs = reset ? [] : JSON.parse(ns.read("data/stocks.json"));
+  const logs = reset ? [] : JSON.parse(ns.read("var/stocks.json"));
   let O = ln;
   O += `${C.white} SYM\t   PROFITS\t    LOSSES\t      DIFF\t  W/L\n`;
   O += ln;
