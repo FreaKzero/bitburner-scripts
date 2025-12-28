@@ -1,6 +1,6 @@
 import { deepscan } from "../lib/scan";
-import { DISTFILES } from "../lib/const";
 import { getArgs, state } from "../lib/utils";
+import cfg from '../etc/sys';
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
@@ -22,7 +22,7 @@ export async function main(ns) {
   for (const serv of servers) {
     if (serv !== "home") {
       ns.killall(serv);
-      ns.scp(DISTFILES, serv);
+      ns.scp(cfg.dist, serv);
 
       const aRam = ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv);
       const sRam = ns.getScriptRam(script);
