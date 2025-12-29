@@ -7,7 +7,7 @@ export async function main(ns) {
   const { script, host, home } = getArgs(ns, {
     script: "dist/auto.js",
     host: null,
-    home: true,
+    home: false,
   });
 
   const servers = deepscan(ns);

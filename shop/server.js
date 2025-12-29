@@ -6,7 +6,7 @@ import cfg from '../etc/names';
 export async function main(ns) {
   ns.disableLog("ALL");
   const startMoney = ns.getPlayer().money;
-  const ln = `${line(51, C.white)}${C.reset}\n`;
+  const ln = `${line(51, "white")}${C.reset}\n`;
   
 
   let { budget } = getArgs(ns, {

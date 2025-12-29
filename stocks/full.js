@@ -5,15 +5,16 @@ import cfg from '../etc/stocks';
 /** @param {import("..").NS } ns */
 export async function main(ns) {
   ns.disableLog("ALL");
-  const { buy, pot, budget, ignore } = getArgs(ns, {
+  const { buylog, buy, pot, budget, ignore } = getArgs(ns, {
     buy: true,
     pot: 0.15,
     budget: ns.getPlayer().money,
-    ignore: null
+    ignore: null,
+    buylog: true
   });
 
   ns.atExit(() => {
-    ns.exec('stocks/exit.js')
+    ns.exec('stocks/exit.js', 'home');
     ns.ui.closeTail();
   });
 
@@ -25,7 +26,7 @@ export async function main(ns) {
   ns.ui.resizeTail(660, 300);
 
   const POT = pot / 100;
-  const ln = `${line(67, C.white)}${C.reset}\n`;
+  const ln = `${line(67, "white")}${C.reset}\n`;
 
   const getBudget = () => {
     const money = ns.getPlayer().money;
@@ -61,7 +62,7 @@ export async function main(ns) {
         const x = s.haveStocks ? '💸' : ignored ? '🚫' : '⌛';
         
         if (buy && !s.haveStocks && haveMoney && s.ableShares > cfg.minShares && !ignored) {
-          ns.exec("stocks/broker.js", "home", 1, s.sym, s.ableShares);
+          ns.exec("stocks/broker.js", "home", 1, s.sym, s.ableShares, buylog ? '1' : undefined);
         }
 
         O += `${col}${x} ${s.sym}\t\t${fpot}\t${fbought}\t${fcur}\t${fprofit}${C.reset}\t\n`;

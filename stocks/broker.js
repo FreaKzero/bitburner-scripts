@@ -5,13 +5,19 @@ import { getStockInfo } from "../lib/stonks";
 export async function main(ns) {
   const sym = ns.args[0];
   const sharearg = ns.args[1];
+  const pop = ns.args[2];
 
   const shares = parseInt(sharearg);
 
   let running = true;
 
+  if (pop) {
+    ns.ui.openTail();
+    ns.ui.resizeTail(450, 150);
+  }
+
   if (!sym || !shares || isNaN(shares)) {
-    ns.alert("you fucked up");
+    ns.print("you fucked up");
   }
 
   ns.stock.buyStock(sym, shares);

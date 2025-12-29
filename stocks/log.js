@@ -13,7 +13,7 @@ export async function main(ns) {
   ns.disableLog("ALL");
   ns.ui.openTail();
   ns.ui.resizeTail(610, 450);
-  const ln = `${line(62, C.white)}${C.reset}\n`;
+  const ln = `${line(62, "white")}${C.reset}\n`;
 
   ns.clearLog();
   const logs = reset ? [] : JSON.parse(ns.read("var/stocks.json"));

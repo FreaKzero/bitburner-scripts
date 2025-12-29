@@ -23,7 +23,7 @@ export async function main(ns) {
     return money + BUDGET - startMoney;
   };
 
-  const ln = `${line(67, C.white)}${C.reset}\n`;
+  const ln = `${line(67, "white")}${C.reset}\n`;
 
   const FORECAST_SCORE = {
     "---": 0.1,
