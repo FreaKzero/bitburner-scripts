@@ -56,16 +56,16 @@ export async function main(ns) {
   });
 
   while (running) {
-    const st = getStockInfo(ns, sym);
-
-    if (st.forecast < cfg.forecastTreshold && st.potential < 0.14) {
+    //const curStock = getStockInfo(ns, sym);
+    
+    if (ns.stock.getPosition(sym)[0] <= 0) {
       running = false;
     }
-    
-    if (st.longShares <= 0) {
-      running = false
+
+    if (ns.stock.getForecast(sym) < cfg.forecastTreshold) {
+      running = false;
     }
-  
+
     await ns.stock.nextUpdate();
   }
 }

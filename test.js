@@ -5,13 +5,14 @@ import cfg from "./etc/stocks";
 /** @param {import(".").NS } ns */
 export async function main(ns) {
   const doc = eval("document");
-  goSidebar('stock market');
-  while (true) {  
-   if (
-      !doc.querySelector("h4")?.innerText.includes("World Stock Exchange")
-    ) {
-      goSidebar("stock market");
-    }
-    await ns.sleep(2000);
+  goSidebar("factions");
+  const a = doc.querySelectorAll(".MuiTable-root tr th");
+  const find = Array.from(a).find((a) => a.innerText.includes("Working for"));
+
+  if (find) {
+    const faction = find.innerText.replace("Working for ", "").trim();
+    const a = doc.querySelectorAll(".factions-joined .MuiPaper-root");
+    const find2 = [...a].find((a) => a.innerText.includes(faction));
+    find2.querySelector("button").click();
   }
 }

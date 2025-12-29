@@ -1,4 +1,5 @@
 import { getThreads } from "../lib/utils";
+import cfg from '../etc/sys';
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
@@ -8,4 +9,7 @@ export async function main(ns) {
         ns.ui.openTail(script);
         const threads = getThreads(ns, 'home', script);
         ns.exec(script, 'home', threads, args);
+}
+ export function autocomplete(data, args) {     
+    return cfg.dist;      
 }
