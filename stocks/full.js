@@ -13,6 +13,7 @@ export async function main(ns) {
   });
 
   ns.atExit(() => {
+    ns.exec('stocks/exit.js')
     ns.ui.closeTail();
   });
 
@@ -59,7 +60,7 @@ export async function main(ns) {
         const col = s.profit < 0 ? C.red : s.haveStocks ? C.green : ignored ? C.black : C.white;
         const x = s.haveStocks ? '💸' : ignored ? '🚫' : '⌛';
         
-        if (buy && !s.haveStocks && haveMoney && s.ableShares > 1000 && !ignored) {
+        if (buy && !s.haveStocks && haveMoney && s.ableShares > cfg.minShares && !ignored) {
           ns.exec("stocks/broker.js", "home", 1, s.sym, s.ableShares);
         }
 

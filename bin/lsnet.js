@@ -18,6 +18,8 @@ export async function main(ns) {
     ns.tprintRaw('Sort Options: level | money')
   });
 
+  ns.atExit(() => ns.ui.closeTail());
+  
   const render = () => {
     const attacked = state(ns, "attack");
     let output = "\n";

@@ -1,17 +1,28 @@
 import { goSidebar } from "../lib/ui";
-import { fromFormat, pad, line, C } from "../lib/utils";
+import { fromFormat, pad, line, C, getArgs } from "../lib/utils";
 import cfg from "../etc/stocks";
 
-
-// TODO Arguments
-// TODO Budget
-// TODO Refactor
 /** @param {import("..").NS } ns */
 export async function main(ns) {
-  ns.disableLog("sleep");
+  const { debug, ignore, budget } = getArgs(ns, {
+    budget: ns.getPlayer().money,
+    ignore: null,
+    debug: false,
+  });
+
+  ns.disableLog("ALL");
+  const startMoney = ns.getPlayer().money;
   ns.ui.openTail();
+  ns.ui.resizeTail(660, 300);
   goSidebar("stock market");
-  const debug = false;
+  
+  const BUDGET = fromFormat(budget);
+
+  const getBudget = () => {
+    const money = ns.getPlayer().money;
+    return money + BUDGET - startMoney;
+  };
+
   const ln = `${line(67, C.white)}${C.reset}\n`;
 
   const FORECAST_SCORE = {
@@ -23,7 +34,6 @@ export async function main(ns) {
     "+++": 0.9,
   };
 
-  const ignore = null;
   const MAX_VOLATILITY = 5;
   const IGNORESTOCKS = ignore
     ? cfg.ignoreStocks.concat(ignore.split(",").map((a) => a.trim()))
@@ -55,7 +65,6 @@ export async function main(ns) {
     const ableShares = buyableShares <= maxShares ? buyableShares : maxShares;
     const ablePrice = ableShares * price;
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [longShares, longPrice] = ns.stock.getPosition(match[2]);
 
     return {
@@ -90,12 +99,14 @@ export async function main(ns) {
       });
   });
 
-  let ui = ln;
-  ui += `${C.white}   SYM\t\t  POT\t    BOUGHT\t   CURRENT\t   DIFF\t\n`;
-  ui += ln;
   while (true) {
+    let ui = `${C.yellow}Current Budget: $${ns.formatNumber(getBudget())} \n`;
+
+    ui +=  ln;
+    ui += `${C.white}   SYM\t\t  POT\t    BOUGHT\t   CURRENT\t      DIFF\t\n`;
+    ui += ln;
     const doc = eval("document");
-    if (!doc.querySelector("h4").innerText.includes("World Stock Exchange")) {
+    if (!doc.querySelector("h4")?.innerText?.includes("World Stock Exchange")) {
       goSidebar("stock market");
     }
 
@@ -105,11 +116,12 @@ export async function main(ns) {
       console.clear();
       console.table(stocks);
     }
+
     for (var stock of stocks) {
       if (
         !stock.haveStocks &&
         stock.score > 0.91 &&
-        stock.ableShares >= 1000 &&
+        getBudget() >= stock.ablePrice &&
         !IGNORESTOCKS.includes(stock.sym)
       ) {
         ns.stock.buyStock(stock.sym, stock.ableShares);
@@ -125,14 +137,15 @@ export async function main(ns) {
     ui += stocks
       .filter((a) => a.haveStocks)
       .map((a) => {
-        const long = pad(ns.formatNumber(a.longPrice), 8, '$', false);
-        const price = pad(ns.formatNumber(a.price), 8, '$', false);
-        const diff = pad(ns.formatNumber(a.price - a.longPrice), 8, '$', false);
+        const long = pad(ns.formatNumber(a.longPrice), 8, "$", false);
+        const price = pad(ns.formatNumber(a.price), 8, "$", false);
+        const diff = pad(ns.formatNumber(a.price - a.longPrice), 8, "$", false);
         const col = a.price - a.longPrice < 0 ? C.red : C.green;
 
-        return `${col} 💸 ${a.sym}\t${a.score}\t${long}\t${price}\t${diff}${C.reset}`;
-      }).join("\n");
-
+        return `${col} 💸 ${a.sym} \t${a.score.toFixed(4)}\t${long}\t${price}\t${diff}${C.reset}`;
+      })
+      .join("\n");
+    ui += "\n" + ln;
     ns.print(ui);
 
     await ns.stock.nextUpdate();

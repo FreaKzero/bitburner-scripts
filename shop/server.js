@@ -1,4 +1,4 @@
-import { C, fromFormat, getArgs } from "../lib/utils";
+import { C, fromFormat, getArgs, line } from "../lib/utils";
 import cfg from '../etc/names';
 
 
@@ -6,6 +6,8 @@ import cfg from '../etc/names';
 export async function main(ns) {
   ns.disableLog("ALL");
   const startMoney = ns.getPlayer().money;
+  const ln = `${line(51, C.white)}${C.reset}\n`;
+  
 
   let { budget } = getArgs(ns, {
     budget: undefined,
@@ -49,7 +51,8 @@ export async function main(ns) {
     const servers = AllServers.filter((a) => a.ram < MAXRAM);
 
     let O = `CURRENT BUDGET: $${ns.formatNumber(getBudget())}\n`;
- 
+    O += ln;
+
     if (!servers.length) {
       if (ns.getPurchasedServerCost(SERVER_NEW_RAM) < getBudget()) {
         ns.purchaseServer(
@@ -75,6 +78,7 @@ export async function main(ns) {
       }\n`;
     }
     ns.clearLog();
+    O += ln;
     ns.print(O);
 
      if (numServer >= maxServer) {

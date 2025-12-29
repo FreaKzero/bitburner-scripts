@@ -4,5 +4,6 @@ export default {
     chanceTreshold: 0.5,
     forecastTreshold: 0.53, 
     priceTreshold: 1000,
+    minShares: 100,
     ignoreStocks: ["APHE"]
 }   
