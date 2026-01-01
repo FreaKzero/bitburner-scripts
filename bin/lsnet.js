@@ -1,7 +1,7 @@
 import { state, getArgs, pad, C, replaceAll, setupTail } from "../lib/utils";
 import { deepscan } from "../lib/scan";
 import { STOCK_HOST_COLLECTION } from "../lib/const";
-import { SPECIAL_HOSTS } from "../data/cache.js";
+import { SPECIAL_HOSTS } from "../var/cache.js";
 import cfg from "../etc/names.js";
 
 /** @param {import("..").NS } ns */
@@ -12,9 +12,9 @@ export async function main(ns) {
     w: 850,
     h: 800,
     x: 265,
-    y: 13,
+    y: 13, 
   });
-
+ 
   const { watch, sort, ducks, dir } = getArgs(
     ns,
     {

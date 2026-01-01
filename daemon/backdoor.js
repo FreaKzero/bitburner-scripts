@@ -1,7 +1,7 @@
 import { DARKWEB_PROGRAMS } from "../lib/const";
 import { C, pad, setupTail } from "../lib/utils";
 import { execTerm, } from "../lib/ui";
-import { SPECIAL_HOSTS } from "../data/cache.js";
+import { SPECIAL_HOSTS } from "../var/cache.js";
 /** @param {import("..").NS } ns */
 export async function main(ns) {
 
@@ -14,7 +14,7 @@ export async function main(ns) {
   });
   ns.disableLog("ALL");
   let hacked = 0;
-
+ 
   const openPorts = DARKWEB_PROGRAMS.map((a) => a.program).reduce(
     (acc, cur) => {
       acc += ns.fileExists(cur) ? 1 : 0;

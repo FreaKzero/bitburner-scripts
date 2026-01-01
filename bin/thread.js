@@ -1,6 +1,6 @@
 import { getThreads } from "../lib/utils";
 import cfg from "../etc/sys";
-import { HOSTS } from '../data/cache.js';
+import { HOSTS } from '../var/cache.js';
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
@@ -15,7 +15,7 @@ export async function main(ns) {
   ns.exec(script, "home", uThreads, args);
   ns.ui.openTail(script);
 }
-
+  
 export function autocomplete(data, args) {
   const x = [10, 20, 30, 40, 50, 60, 70, 80, 90];
   if (args.length === 0) {

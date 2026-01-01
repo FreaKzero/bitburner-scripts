@@ -1,6 +1,7 @@
 import { goSidebar } from "../lib/ui";
-import { fromFormat, pad, line, C, getArgs } from "../lib/utils";
+import { fromFormat, pad, line, C, getArgs, setupTail } from "../lib/utils";
 import cfg from "../etc/stocks";
+import Store from "../lib/store";
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
@@ -12,10 +13,17 @@ export async function main(ns) {
 
   ns.disableLog("ALL");
   const startMoney = ns.getPlayer().money;
-  ns.ui.openTail();
-  ns.ui.resizeTail(660, 300);
+
+  setupTail(ns, {
+    title: " 📈 Stonks Watcher (UI-Hook)",
+    w: 660,
+    h: 300,
+    x: 264,
+    y: 50,
+  });
+
   goSidebar("stock market");
-  
+
   const BUDGET = fromFormat(budget);
 
   const getBudget = () => {
@@ -36,8 +44,8 @@ export async function main(ns) {
 
   const MAX_VOLATILITY = 5;
   const IGNORESTOCKS = ignore
-    ? cfg.ignoreStocks.concat(ignore.split(",").map((a) => a.trim()))
-    : cfg.ignoreStocks;
+    ? cfg.ignoreStocksLight.concat(ignore.split(",").map((a) => a.trim()))
+    : cfg.ignoreStocksLight;
 
   function normalizeVolatility(vol) {
     return Math.min(vol / MAX_VOLATILITY, 1);
@@ -100,9 +108,9 @@ export async function main(ns) {
   });
 
   while (true) {
-    let ui = `${C.yellow}Current Budget: $${ns.formatNumber(getBudget())} \n`;
+    let ui = `${C.yellow} 💰 CURRENT BUDGET: $${ns.formatNumber(getBudget())} \n`;
 
-    ui +=  ln;
+    ui += ln;
     ui += `${C.white}   SYM\t\t  POT\t    BOUGHT\t   CURRENT\t      DIFF\t\n`;
     ui += ln;
     const doc = eval("document");
@@ -130,6 +138,40 @@ export async function main(ns) {
       }
 
       if (stock.haveStocks && stock.score < 0.85) {
+        const x = new Store(ns, "var/stocks.json");
+        x.setSchema({
+          sym: stock.sym,
+          fails: 0,
+          wins: 0,
+          profits: 0,
+          losses: 0,
+        });
+ 
+        x.findOne((a) => a.sym === stock.sym)
+          .upsert((a) => {
+            const [longShares, longPrice] = ns.stock.getPosition(stock.sym);
+
+            const profit =
+              longShares > 0
+                ? longShares * (ns.stock.getBidPrice(stock.sym) - longPrice) -
+                  cfg.tradeFees
+                : 0;
+            if (profit < 0) {
+              return {
+                ...a,
+                fails: a.fails + 1,
+                losses: a.losses + profit,
+              };
+            } else {
+              return {
+                ...a,
+                wins: a.wins + 1,
+                profits: a.profits + profit,
+              };
+            }
+          })
+          .persist();
+
         ns.stock.sellStock(stock.sym, stock.longShares);
         stock.e.click();
       }
@@ -142,7 +184,9 @@ export async function main(ns) {
         const diff = pad(ns.formatNumber(a.price - a.longPrice), 8, "$", false);
         const col = a.price - a.longPrice < 0 ? C.red : C.green;
 
-        return `${col} 💸 ${a.sym} \t${a.score.toFixed(4)}\t${long}\t${price}\t${diff}${C.reset}`;
+        return `${col} 💸 ${a.sym} \t${a.score.toFixed(
+          4
+        )}\t${long}\t${price}\t${diff}${C.reset}`;
       })
       .join("\n");
     ui += "\n" + ln;

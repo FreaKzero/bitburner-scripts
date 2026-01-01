@@ -4,6 +4,7 @@ export default {
   prefixHacknet: "hacknet-node-",
   boot: 
   [
+    { title: "Register Aliases", script: "etc/alias.js", args: [], order: 0 },
     { title: "Building Cache", script: "bin/buildcache.js", args: [], order: 0 },
     { title: "Monitor", script: "bin/psx.js", args: [], order: 1 },
     { title: "Contracts Daemon", script: "daemon/contracts.js", args: [], order: 2 },
@@ -22,3 +23,4 @@ export default {
     "dist/weak.js",
   ],
 };
+ 

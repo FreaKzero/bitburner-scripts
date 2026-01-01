@@ -4,7 +4,7 @@ import {deepscan} from '../lib/scan';
 export async function main(ns) {
     const list = deepscan(ns, 'home');
     const SPECIAL = ["CSEC", "avmnite-02h", "I.I.I.I", "run4theh111z", "The-Cave", "powerhouse-fitness"];
-    
+     
     const HOSTS = `export const HOSTS = ${JSON.stringify(list)}`;
     
     const speclist = list.filter(a => SPECIAL.includes(a)).map(a => {
@@ -20,7 +20,8 @@ export async function main(ns) {
     const SPECIAL_HOSTS = `export const SPECIAL_HOSTS = ${JSON.stringify(speclist)}`;
 
     const content = `${HOSTS};\n\n${SPECIAL_HOSTS};`;
-    ns.write('../data/cache.js', content, 'w');
+    ns.write('../var/cache.js', content, 'w');
 
 }
-
+ 
+ 

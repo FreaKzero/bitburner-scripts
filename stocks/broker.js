@@ -66,25 +66,3 @@ export async function main(ns) {
   }
 }
 
-
-
-
-/*
-return x.filter((i) => i.haveStocks || (
-
-i.potential > argPotential &&
- i.forecast > cfg.forecastTreshold &&
- i.price >= cfg.priceTreshold))
- .sort((a, b) => b.potential - a.potential);
-
-
-
-
-if (buy &&
- !s.haveStocks &&
- haveMoney &&
- s.ableShares > cfg.minShares &&
- !ignored) {
-
-*/
-

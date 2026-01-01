@@ -1,7 +1,7 @@
 import { deepscan } from "../lib/scan";
 import { state } from "../lib/utils";
 import cfg from "../etc/sys";
-import { HOSTS } from '../data/cache.js';;
+import { HOSTS } from '../var/cache.js';
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
@@ -24,7 +24,7 @@ export async function main(ns) {
     if (serv !== "home") {
       ns.killall(serv);
       ns.scp(cfg.dist, serv);
-
+ 
       const aRam = ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv);
       const sRam = ns.getScriptRam(script);
       const threads = Math.floor(aRam / sRam);

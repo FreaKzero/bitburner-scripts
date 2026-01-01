@@ -6,7 +6,7 @@ export async function main(ns) {
   ns.disableLog("ALL");
 
   setupTail(ns, {
-    title: "🕸️ Hacknet Upgrade Daemon",
+    title: "🕸️ Hacknet Daemon",
     w: 500,
     h: 200,
     x: 1153,

@@ -1,7 +1,7 @@
 import { findConnection } from "../lib/scan";
 import { execTerm } from "../lib/ui";
 import { disableLogs } from "../lib/utils";
-import { HOSTS } from '../data/cache.js';
+import { HOSTS } from '../var/cache.js';
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
@@ -13,8 +13,8 @@ export async function main(ns) {
    const bd = backdoor && backdoor.trim() !== '' ? 'backdoor' : '';
    execTerm(`${p};${bd}`);
 }
-
+ 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function autocomplete(data, args) {     
     return HOSTS;
-}
+}  

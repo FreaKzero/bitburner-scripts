@@ -1,5 +1,5 @@
 import { getStockCollection } from "../lib/stonks";
-import { fromFormat, line, C, pad, getArgs } from "../lib/utils";
+import { fromFormat, line, C, pad, getArgs, setupTail } from "../lib/utils";
 import cfg from "../etc/stocks";
 
 /** @param {import("..").NS } ns */
@@ -20,11 +20,16 @@ export async function main(ns) {
   const startMoney = ns.getPlayer().money;
   const BUDGET = fromFormat(budget);
   const IGNORESTOCKS = ignore
-    ? cfg.ignoreStocks.concat(ignore.split(",").map((a) => a.trim()))
-    : cfg.ignoreStocks;
+    ? cfg.ignoreStocksFull.concat(ignore.split(",").map((a) => a.trim()))
+    : cfg.ignoreStocksFull;
 
-  ns.ui.openTail();
-  ns.ui.resizeTail(660, 300);
+  setupTail(ns, {
+    title: " 📈 Stonks Watcher (API)",
+    w: 660,
+    h: 300,
+    x: 264,
+    y: 50,
+  });
 
   const POT = pot / 100;
   const ln = `${line(67, "white")}${C.reset}\n`;
