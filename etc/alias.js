@@ -14,9 +14,13 @@ alias dir="ls"
 alias logs="ps;run bin/logs.js"
 alias cracknet="run bin/cracknet.js"
 alias deploy="run bin/deploy.js"
-alias thread="run bin/thread.js;ps"
+alias thread="run bin/thread.js"
 alias lsnet="run bin/lsnet.js"
 alias conn="run bin/conn.js"
+alias psx="run bin/psx.js"
+alias windev="run bin/windev.js"
+alias share="run bin/thread.js dist/share.js home 90"
+
 `;
 const normalized = alias
   .split('\n')

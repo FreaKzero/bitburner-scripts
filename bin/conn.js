@@ -1,7 +1,7 @@
 import { findConnection } from "../lib/scan";
 import { execTerm } from "../lib/ui";
 import { disableLogs } from "../lib/utils";
-import { SERVERS } from "../lib/const";
+import { HOSTS } from '../data/cache.js';
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
@@ -16,5 +16,5 @@ export async function main(ns) {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function autocomplete(data, args) {     
-    return SERVERS;
+    return HOSTS;
 }

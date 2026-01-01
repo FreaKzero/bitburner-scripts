@@ -1,19 +1,32 @@
-import { disableLogs, fromFormat, getArgs } from "../lib/utils";
-import cfg from '../etc/names';
+import { C, fromFormat, getArgs, line, setupTail } from "../lib/utils";
+import cfg from "../etc/names";
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
-  disableLogs(ns, ["sleep"]);
+  ns.disableLog("ALL");
+
+  setupTail(ns, {
+    title: "🕸️ Hacknet Upgrade Daemon",
+    w: 500,
+    h: 200,
+    x: 1153,
+    y: 413,
+  });
+
   const startMoney = ns.getPlayer().money;
+  const ln = `${line(51, "black")}${C.reset}\n`;
+
+  const MAX = {
+    ram: 64,
+    cores: 16,
+    level: 200,
+  };
 
   let { budget } = getArgs(ns, {
     budget: undefined,
   });
-  
-  budget = budget ? fromFormat(budget) : startMoney;
 
-  ns.ui.openTail();
-  ns.ui.setTailTitle("Hacknet Upgrade Agent");
+  budget = budget ? fromFormat(budget) : startMoney;
 
   const getHacknetCollection = () => {
     const collection = [];
@@ -33,11 +46,6 @@ export async function main(ns) {
   };
 
   const calcBuy = (node, mode, budget) => {
-    const MAX = {
-      ram: 64,
-      cores: 16,
-      level: 200,
-    };
     const CHECK = {
       ram: ns.hacknet.getRamUpgradeCost,
       cores: ns.hacknet.getCoreUpgradeCost,
@@ -61,6 +69,7 @@ export async function main(ns) {
   };
 
   while (true) {
+    const B = ns.formatNumber(getBudget());
     ns.clearLog();
     const servers = getHacknetCollection();
     const nodes = servers.filter(
@@ -68,9 +77,9 @@ export async function main(ns) {
     );
 
     const nodePrice = ns.hacknet.getPurchaseNodeCost();
-
-    let O = `CURRENT BUDGET: $${ns.formatNumber(getBudget())}\n\n`;
-    O += `NAME\t\tLEVEL\tRAM\tCORES\n-------------------------------------\n`;
+    let O = ln;
+    O += `${C.white} NAME\t\t\tLEVEL\tRAM\tCORES\n`;
+    O += ln;
 
     if (nodes.length < 1) {
       if (nodePrice < getBudget()) {
@@ -96,12 +105,23 @@ export async function main(ns) {
       if (node.cores < 16 && getBudget() > 0) {
         ns.hacknet.upgradeCore(node.id, c);
       }
-
     }
 
     for (const s of servers) {
-      O += `${s.name}\t${s.level}\t${s.fram}\t   ${s.cores}\n`
+      const col =
+        s.cores === MAX.cores && s.ram === MAX.ram && s.level === MAX.level
+          ? C.green
+          : C.yellow;
+      const icon =
+        s.cores === MAX.cores && s.ram === MAX.ram && s.level === MAX.level
+          ? "🗄️"
+          : "🛠️";
+
+      O += `${col} ${icon} ${s.name}\t ${s.level}\t${s.fram}\t   ${s.cores}\n`;
     }
+    O += ln;
+    O += `${C.yellow} 💰 CURRENT BUDGET: $${B}\n`;
+    O += ln;
 
     ns.print(O);
     await ns.sleep(2500);

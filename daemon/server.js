@@ -6,7 +6,7 @@ import cfg from '../etc/names';
 export async function main(ns) {
   ns.disableLog("ALL");
   const startMoney = ns.getPlayer().money;
-  const ln = `${line(51, "white")}${C.reset}\n`;
+  const ln = `${line(51, "black")}${C.reset}\n`;
   
 
   let { budget } = getArgs(ns, {
@@ -42,16 +42,15 @@ export async function main(ns) {
     const money = ns.getPlayer().money;
     return money + budget - startMoney;
   };
-
+ 
   ns.ui.openTail();
-  ns.ui.setTailTitle("Server Upgrade Agent");
+  ns.ui.setTailTitle(" 🗄️ Server Upgrade Daemon");
 
   while (true) {
     const AllServers = getServerCollection();
-    const servers = AllServers.filter((a) => a.ram < MAXRAM);
-
-    let O = `CURRENT BUDGET: $${ns.formatNumber(getBudget())}\n`;
-    O += ln;
+    const servers = AllServers.filter((a) => a.ram <= MAXRAM);
+    const B = ns.formatNumber(getBudget());
+    let O = ln;
 
     if (!servers.length) {
       if (ns.getPurchasedServerCost(SERVER_NEW_RAM) < getBudget()) {
@@ -64,20 +63,22 @@ export async function main(ns) {
 
     for (const server of servers) {
       const purRam = calcUpgrade(server, getBudget());
-      if (server.ram >= purRam) {
-        ns.exit();
+      if (server.ram <= purRam) {
+        break;
       }
       ns.upgradePurchasedServer(server.name, purRam);
     }
 
     for (const server of AllServers) {
       const col = server.ram < MAXRAM ? C.yellow : C.green;
-      const icon = server.ram < MAXRAM ? "💸" : "✔️";
-      O += `${col}${icon}\t${server.name}\tRAM:${ns.formatRam(server.ram)}${
+      const icon = server.ram < MAXRAM ? "🛠️" : "🗄️";
+      O += `${col} ${icon} ${server.name}\tRAM: ${ns.formatRam(server.ram)}${
         C.reset
       }\n`;
     }
     ns.clearLog();
+    O += ln;
+    O += ` 💰 CURRENT BUDGET: $${B}\n`;
     O += ln;
     ns.print(O);
 
@@ -85,8 +86,6 @@ export async function main(ns) {
       ns.print(`Maximum of Purchaseable Servers reached`);
       ns.exit();
     }
-
-
     await ns.sleep(1500);
   }
 }

@@ -1,11 +1,17 @@
-import { DARKWEB_PROGRAMS, SPECIAL_HOSTS } from "../lib/const";
-import { C, pad } from "../lib/utils";
-import { execTerm } from "../lib/ui";
-
+import { DARKWEB_PROGRAMS } from "../lib/const";
+import { C, pad, setupTail } from "../lib/utils";
+import { execTerm, } from "../lib/ui";
+import { SPECIAL_HOSTS } from "../data/cache.js";
 /** @param {import("..").NS } ns */
 export async function main(ns) {
-  ns.ui.openTail();
-  ns.ui.resizeTail(450, 200);
+
+  setupTail(ns, {
+    title: "🚪 Backdoor Daemon",
+    w: 450,
+    h: 200,
+    x: 1145,
+    y: 15,
+  });
   ns.disableLog("ALL");
   let hacked = 0;
 
@@ -17,10 +23,19 @@ export async function main(ns) {
     0
   );
 
-  let O = ``;
-  ns.clearLog();
-
   while (true) {
+    let O = ``;
+    const doc = eval("document");
+    const inTerminal = doc.getElementById("terminal-input") ? true : false;
+
+     if (!inTerminal) {
+      ns.print(
+        `${C.yellow}   🚨 Not in Terminal, Process disabled 🚨\n\n\n\n`
+      );
+      break;
+    }
+
+    ns.clearLog();
     for (const h of SPECIAL_HOSTS) {
       const s = ns.getServer(h.host);
       const skill = ns.getPlayer().skills.hacking;
@@ -28,21 +43,24 @@ export async function main(ns) {
 
       if (!s.backdoorInstalled && skill >= h.lvl && h.ports <= openPorts) {
         ns.print(`\t   Please Wait ...`);
-        ns.print(`\t   🖥️ Hacking ${h.host}\n\n\n\n`);
+        ns.print(`\t   🖥️ Backdooring  ${h.host}\n\n\n\n`);
         ns.exec("bin/conn.js", "home", 1, h.host, "true");
         await ns.sleep(30000);
         hacked++;
         execTerm("home");
-      } else if (s.backdoorInstalled) {
+      }
+
+      if (s.backdoorInstalled) {
         hacked++;
       }
+
       ns.clearLog();
       O += `${s.backdoorInstalled ? C.green : C.red}${
-        s.backdoorInstalled ? "✔️" : "❌"
+        s.backdoorInstalled ? " ✔️" : " ❌"
       }  ${pad(left > 0 ? left : 0, 3, "", false)}  ${h.host} ${C.reset}\n`;
     }
 
-    if (hacked >= SPECIAL_HOSTS.length) {
+    if (hacked >= SPECIAL_HOSTS.length && openPorts >= 5) {
       O = `${C.magenta}   🕶️ All Faction Hosts are Backdoored 🕶️\n\n\n\n`;
     }
 

@@ -1,34 +1,22 @@
 import { C } from "../lib/utils";
-import { findElement, goCity } from "../lib/ui";
+import cfg from "../etc/sys";
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
+  ns.disableLog("ALL");
   ns.ui.clearTerminal();
   ns.killall();
+  await ns.sleep(1000);
 
-  goCity('FoodNStuff');
-  findElement('.MuiButtonBase-root', 'part-time employee', true);
-  findElement('.MuiButtonBase-root', 'work', true);
+  const h = "home";
 
-  let O = `
-  ${C.white} 🟢 Starting Contracts Daemon ...${C.reset}
-  ${C.white} 🟢 Starting Netmonitor ...${C.reset}
-  ${C.white} 🟢 Starting Crackshop ...${C.reset}
-  ${C.red} 💣 Cracking Hosts ...${C.reset}
-  `;
-  
-  ns.exec("bin/cracknet.js", 'home');
-  ns.exec("daemon/contracts.js", "home");
-  ns.exec("shop/cracks.js", "home");
+  for (const b of cfg.boot) {
+    ns.tprint(`🟢 Starting ${b.title} ...`);
+    ns.exec(b.script, h, 1, ...b.args);
+    await ns.sleep(1000);
+  }
 
-  ns.tprint(O);
-
-  await ns.sleep(3000);
-  ns.exec('bin/deploy.js', 'home', 1, 'script=dist/auto.js', 'host=n00dles')
-
-  let U = `\n${C.red} 💥 Attacking n00dles ...${C.reset}\n`;
-  U += `${C.white} 🌭 Find a Job ... ${C.reset}\n`;
-  U += `
+  const LOGO = `
        .@@@@@@@@@@@@@@@@@.   
          .@@@@@@@@@@@@@.            
            .@@@@@@@@@.           
@@ -53,6 +41,6 @@ export async function main(ns) {
         .@@@@@@@@@@@@@@@@. 
 `;
 
-ns.tprint(U);
-ns.exec('bin/logs.js', 'home');
+  ns.tprint(LOGO);
+
 }

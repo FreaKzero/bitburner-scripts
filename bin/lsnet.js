@@ -1,48 +1,56 @@
-import { state, getArgs, pad, C, replaceAll } from "../lib/utils";
+import { state, getArgs, pad, C, replaceAll, setupTail } from "../lib/utils";
 import { deepscan } from "../lib/scan";
-import { SPECIAL_HOSTS, STOCK_HOST_COLLECTION } from "../lib/const";
-import cfg from '../etc/names.js';
+import { STOCK_HOST_COLLECTION } from "../lib/const";
+import { SPECIAL_HOSTS } from "../data/cache.js";
+import cfg from "../etc/names.js";
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
-  ns.disableLog('ALL')
-  ns.ui.openTail();
-  ns.ui.resizeTail(850, 800);
-
-  const { own, sort, ducks, dir } = getArgs(ns, {
-    sort: 'level',
-    ducks: true,
-    dir: "asc",
-    own: false,
-  }, () => {
-    ns.tprintRaw('Sort Options: level | money')
+  ns.disableLog("ALL");
+  setupTail(ns, {
+    title: `🌐 Network Monitor`,
+    w: 850,
+    h: 800,
+    x: 265,
+    y: 13,
   });
 
-  ns.atExit(() => ns.ui.closeTail());
-  
+  const { watch, sort, ducks, dir } = getArgs(
+    ns,
+    {
+      sort: "level",
+      ducks: true,
+      dir: "asc",
+      watch: false,
+    },
+    () => {
+      ns.tprintRaw("Sort Options: level | money");
+    }
+  );
+
   const render = () => {
     const attacked = state(ns, "attack");
     let output = "\n";
-    let list = deepscan(ns);
-    if (!own) {
-      list = list.filter((a) => !a.includes(cfg.prefixServer));
-    }
-  
+    let list = deepscan(ns).filter((a) => !a.includes(cfg.prefixServer));
     list = list.map((item) => {
-    const times = [ns.getHackTime(item), ns.getGrowTime(item), ns.getWeakenTime(item)]
-    const avg = times.reduce((a, b) => a + b, 0) / times.length;
-    
-    const hacktime = replaceAll(ns.tFormat(avg), {
-        ' seconds': 's',
-        ' second': 's',
-        ' minutes': 'm',
-        ' minute': 'm',
-        ' hours': 'h',
-        ' hour': 'h',
-    });
+      const times = [
+        ns.getHackTime(item),
+        ns.getGrowTime(item),
+        ns.getWeakenTime(item),
+      ];
+      const avg = times.reduce((a, b) => a + b, 0) / times.length;
+
+      const hacktime = replaceAll(ns.tFormat(avg), {
+        " seconds": "s",
+        " second": "s",
+        " minutes": "m",
+        " minute": "m",
+        " hours": "h",
+        " hour": "h",
+      });
 
       const serv = ns.getServer(item);
-      
+
       const run =
         serv.ramUsed > 0
           ? "🖥️"
@@ -59,10 +67,10 @@ export async function main(ns) {
         ? "🔑"
         : `🔒(${serv.numOpenPortsRequired})`;
 
-      let col = SPECIAL_HOSTS.find((e) => e.host === item)
-        ? C.magenta
-        : serv.backdoorInstalled
+      let col = serv.backdoorInstalled
         ? C.yellow
+        : SPECIAL_HOSTS.find((e) => e.host === item)
+        ? C.magenta
         : attacked === item
         ? C.red
         : serv.hasAdminRights
@@ -82,7 +90,7 @@ export async function main(ns) {
         indicator: bd,
         col: col,
         symbol: stock.sym,
-        hacktime: hacktime
+        hacktime: hacktime,
       };
     });
 
@@ -116,15 +124,22 @@ export async function main(ns) {
         15,
         "$",
         false
-      )} ${pad(moneyMax, 10, "$", false)}   ${pad(a.hacktime, 10, "", false)} ${C.reset}\n`;
+      )} ${pad(moneyMax, 10, "$", false)}   ${pad(a.hacktime, 10, "", false)} ${
+        C.reset
+      }\n`;
     });
 
     ns.print(output);
   };
 
-  while (true) {
+  if (watch) {
+    while (true) {
+      ns.clearLog();
+      render();
+      await ns.sleep(5000);
+    }
+  } else {
     ns.clearLog();
     render();
-    await ns.sleep(5000);
   }
 }
