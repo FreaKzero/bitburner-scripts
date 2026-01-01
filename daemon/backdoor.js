@@ -1,35 +1,52 @@
-import {DARKWEB_PROGRAMS, SPECIAL_HOSTS} from '../lib/const';
-import { C, pad } from '../lib/utils';
-import {execTerm} from '../lib/ui';
+import { DARKWEB_PROGRAMS, SPECIAL_HOSTS } from "../lib/const";
+import { C, pad } from "../lib/utils";
+import { execTerm } from "../lib/ui";
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
   ns.ui.openTail();
   ns.ui.resizeTail(450, 200);
-  ns.disableLog('ALL');
+  ns.disableLog("ALL");
+  let hacked = 0;
 
-  const openPorts = DARKWEB_PROGRAMS.map(a => a.program).reduce((acc, cur) => {
-    acc += ns.fileExists(cur) ? 1 : 0;
-    return acc;
-  }, 0);
+  const openPorts = DARKWEB_PROGRAMS.map((a) => a.program).reduce(
+    (acc, cur) => {
+      acc += ns.fileExists(cur) ? 1 : 0;
+      return acc;
+    },
+    0
+  );
 
-   let O = ``;
-    ns.clearLog();
+  let O = ``;
+  ns.clearLog();
+
+  while (true) {
     for (const h of SPECIAL_HOSTS) {
       const s = ns.getServer(h.host);
       const skill = ns.getPlayer().skills.hacking;
       const left = h.lvl - skill;
 
-      if (!s.backdoorInstalled && (skill >= h.lvl && h.ports <= openPorts)) {
+      if (!s.backdoorInstalled && skill >= h.lvl && h.ports <= openPorts) {
         ns.print(`\t   Please Wait ...`);
         ns.print(`\t   🖥️ Hacking ${h.host}\n\n\n\n`);
-        ns.exec('bin/conn.js', 'home', 1, h.host, 'true');
-        await ns.sleep(50000);
-        execTerm('home'); 
+        ns.exec("bin/conn.js", "home", 1, h.host, "true");
+        await ns.sleep(30000);
+        hacked++;
+        execTerm("home");
+      } else if (s.backdoorInstalled) {
+        hacked++;
       }
       ns.clearLog();
-      O += `${s.backdoorInstalled ? C.green : C.red}${s.backdoorInstalled ? "✔️" : "❌"}  ${pad(left > 0 ? left : 0, 3, '', false)}  ${h.host} ${C.reset}\n`;
+      O += `${s.backdoorInstalled ? C.green : C.red}${
+        s.backdoorInstalled ? "✔️" : "❌"
+      }  ${pad(left > 0 ? left : 0, 3, "", false)}  ${h.host} ${C.reset}\n`;
+    }
+
+    if (hacked >= SPECIAL_HOSTS.length) {
+      O = `${C.magenta}   🕶️ All Faction Hosts are Backdoored 🕶️\n\n\n\n`;
     }
 
     ns.print(O);
+    await ns.sleep(5 * 10000);
+  }
 }

@@ -62,10 +62,6 @@ export async function main(ns) {
       running = false;
     }
     
-    if (st.longShares <= 0) {
-      running = false
-    }
-  
     await ns.stock.nextUpdate();
   }
 }
