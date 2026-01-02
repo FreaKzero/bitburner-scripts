@@ -1,3 +1,86 @@
+export function reactSetInput(placeholder, value) {
+  const doc = eval("document");
+  const input = Array.from(doc.querySelectorAll("input")).find(
+    (i) => i.placeholder === placeholder
+  );
+
+  if (!input) {
+    console.error("Input nicht gefunden:", placeholder);
+    return;
+  }
+
+  const fiberKey = Object.keys(input).find(
+    (k) => k.startsWith("__reactFiber$") || k.startsWith("__reactProps$")
+  );
+
+  if (!fiberKey) {
+    console.error("React Fiber nicht gefunden");
+    return;
+  }
+
+  const fiber = input[fiberKey];
+
+  const props =
+    fiber.memoizedProps || fiber.pendingProps || fiber.return?.memoizedProps;
+
+  if (!props || typeof props.onChange !== "function") {
+    console.error("onChange Handler nicht gefunden");
+    return;
+  }
+
+  const nativeSetter = Object.getOwnPropertyDescriptor(
+    HTMLInputElement.prototype,
+    "value"
+  ).set;
+
+  nativeSetter.call(input, value);
+
+  const fakeEvent = {
+    isTrusted: true,
+    target: input,
+    currentTarget: input,
+    type: "change",
+    preventDefault() {},
+    stopPropagation() {},
+  };
+
+  props.onChange(fakeEvent);
+}
+
+export function reactClickButton(text) {
+  const doc = eval("document");
+  const btn = Array.from(doc.querySelectorAll("button")).find(
+    (b) => b.innerText.trim() === text
+  );
+
+  if (!btn) return console.error("Button nicht gefunden:", text);
+
+  const fiberKey = Object.keys(btn).find(
+    (k) => k.startsWith("__reactFiber$") || k.startsWith("__reactProps$")
+  );
+
+  if (!fiberKey) return console.error("React Fiber nicht gefunden");
+
+  const fiber = btn[fiberKey];
+
+  const props =
+    fiber.memoizedProps || fiber.pendingProps || fiber.return?.memoizedProps;
+
+  if (!props || typeof props.onClick !== "function")
+    return console.error("onClick Handler nicht gefunden");
+
+  const fakeEvent = {
+    isTrusted: true,
+    type: "click",
+    target: btn,
+    currentTarget: btn,
+    preventDefault() {},
+    stopPropagation() {},
+  };
+
+  props.onClick(fakeEvent);
+}
+
 /**
  * Go to any Sidebar Menu Selection
  * terminal, script editor, active scripts, create program, stats, factions, augmentations, hacknet, city, travel, stock market
@@ -30,15 +113,19 @@ export function goSidebar(where) {
 export function goCity(w) {
   const doc = eval("document");
   goSidebar("city");
-  const locs = [...doc.querySelectorAll(`span[aria-label]`)].map(e => e.getAttribute('aria-label'));
-  const found = locs.map(e => e.toLowerCase().indexOf(w.toLowerCase())).findIndex(a => a > -1);
+  const locs = [...doc.querySelectorAll(`span[aria-label]`)].map((e) =>
+    e.getAttribute("aria-label")
+  );
+  const found = locs
+    .map((e) => e.toLowerCase().indexOf(w.toLowerCase()))
+    .findIndex((a) => a > -1);
 
   if (found) {
     const node = doc.querySelector(`span[aria-label="${locs[found]}"]`);
     if (node) {
       node.click();
     }
-  }  
+  }
 }
 
 /**
@@ -49,7 +136,9 @@ export function goCity(w) {
 export function getCityLocations() {
   const doc = eval("document");
   goSidebar("city");
-  return [...doc.querySelectorAll(`span[aria-label]`)].map(e => e.getAttribute('aria-label'));
+  return [...doc.querySelectorAll(`span[aria-label]`)].map((e) =>
+    e.getAttribute("aria-label")
+  );
 }
 
 // TODO check if there is something to confirm (!)
@@ -100,7 +189,7 @@ export function goLocation(where) {
   const find = Array.from(cities).find(
     (a) =>
       !a.getAttribute("aria-label").toLowerCase().includes("travel") &&
-      !a.getAttribute("aria-label").toLowerCase().includes("slums") && 
+      !a.getAttribute("aria-label").toLowerCase().includes("slums") &&
       a.innerText.trim().toLowerCase() === where.toLowerCase()
   );
 
@@ -140,7 +229,7 @@ export async function findElement(htmlClass, textInc, doClick = true) {
  * @param {string} command
  */
 export function execTerm(command) {
-  goSidebar('terminal');
+  goSidebar("terminal");
   const doc = eval("document");
   const terminalInput = doc.getElementById("terminal-input");
   terminalInput.value = command;

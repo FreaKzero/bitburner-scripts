@@ -1,4 +1,4 @@
-import { execTerm, findElement } from "../lib/ui";
+import { findElement } from "../lib/ui";
 
 /** @param {import("..").NS } ns */
 export async function main() {

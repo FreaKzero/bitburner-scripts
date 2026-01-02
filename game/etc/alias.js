@@ -1,7 +1,6 @@
 import { execTerm } from "../lib/ui";
 
 export function main() {
-
   const alias = ` 
 unalias --all
 alias -g fl1ght="run fl1ght.exe"
@@ -19,7 +18,7 @@ alias lsnet="run bin/lsnet.js"
 alias conn="run bin/conn.js"
 alias psx="run bin/psx.js"
 alias windev="run bin/windev.js"
-alias share="run bin/thread.js dist/share.js home 50"
+alias share="run bin/thread.js dist/share.js home"
 
 `;
 const normalized = alias
