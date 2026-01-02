@@ -5,7 +5,7 @@ export function reactSetInput(placeholder, value) {
   );
 
   if (!input) {
-    console.error("Input nicht gefunden:", placeholder);
+    console.error("Input not found:", placeholder);
     return;
   }
 
@@ -14,7 +14,7 @@ export function reactSetInput(placeholder, value) {
   );
 
   if (!fiberKey) {
-    console.error("React Fiber nicht gefunden");
+    console.error("React Fiber not found");
     return;
   }
 
@@ -24,7 +24,7 @@ export function reactSetInput(placeholder, value) {
     fiber.memoizedProps || fiber.pendingProps || fiber.return?.memoizedProps;
 
   if (!props || typeof props.onChange !== "function") {
-    console.error("onChange Handler nicht gefunden");
+    console.error("onChange handler not found");
     return;
   }
 
@@ -53,13 +53,13 @@ export function reactClickButton(text) {
     (b) => b.innerText.trim() === text
   );
 
-  if (!btn) return console.error("Button nicht gefunden:", text);
+  if (!btn) return console.error("Button not found:", text);
 
   const fiberKey = Object.keys(btn).find(
     (k) => k.startsWith("__reactFiber$") || k.startsWith("__reactProps$")
   );
 
-  if (!fiberKey) return console.error("React Fiber nicht gefunden");
+  if (!fiberKey) return console.error("React Fiber not found");
 
   const fiber = btn[fiberKey];
 
@@ -67,7 +67,7 @@ export function reactClickButton(text) {
     fiber.memoizedProps || fiber.pendingProps || fiber.return?.memoizedProps;
 
   if (!props || typeof props.onClick !== "function")
-    return console.error("onClick Handler nicht gefunden");
+    return console.error("onClick handler not found");
 
   const fakeEvent = {
     isTrusted: true,
@@ -80,6 +80,7 @@ export function reactClickButton(text) {
 
   props.onClick(fakeEvent);
 }
+
 
 /**
  * Go to any Sidebar Menu Selection
