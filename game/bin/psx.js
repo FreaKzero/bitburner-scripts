@@ -28,7 +28,7 @@ export async function main(ns) {
     ns.print(ln);
     ns.print(` 💻 ${ram.info}`);
     ns.print(ln);
-    const processes = ns.ps(host).sort((a,b) => b.threads - a.threads);
+    const processes = ns.ps(host).sort((a, b) => b.threads - a.threads);
     const ui = processes.map((a) => {
       const r = ns.getScriptRam(a.filename);
       return ` ${pad(a.filename, 15)}\t${pad(a.threads, 3, "", false)}${pad(
@@ -40,8 +40,10 @@ export async function main(ns) {
     });
     ns.print(ui.join("\n"));
     ns.print(ln);
-    ns.print(` 💥 ${C.red}Attack: ${attacked}`);
-    ns.print(ln);
+    if (attacked) {
+      ns.print(` 💥 ${C.red}Attack: ${attacked}`);
+      ns.print(ln);
+    }
   }
 
   while (true) {
