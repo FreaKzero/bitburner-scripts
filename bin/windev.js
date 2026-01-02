@@ -4,7 +4,7 @@ import { line } from "../lib/utils";
 export async function main(ns) {
 
     const w = ns.args[0] || 450;
-    const h = ns.args[1] || 250;
+    const h = ns.args[1] || 290;
 
     ns.ui.openTail();
     ns.ui.setTailTitle('DEVELOPMENT');
@@ -34,6 +34,7 @@ export async function main(ns) {
             
                 ns.print(line(chars));
                 ns.print(`
+const ln = line(${chars}, 'white');
 setupTail(ns,${JSON.stringify(pos, null, 2)});`);
             }
         }

@@ -32,7 +32,7 @@ export async function main(ns) {
   });
 
   const POT = pot / 100;
-  const ln = `${line(67, "white")}${C.reset}\n`;
+  const ln = `${line(67, "black")}${C.reset}\n`;
 
   const getBudget = () => {
     const money = ns.getPlayer().money;
@@ -103,7 +103,7 @@ export async function main(ns) {
 
       ns.print(O);
     } else {
-      ns.print(`${C.magenta}\t\t   👁️ Waiting for potential Stocks\n\n\n\n`);
+      ns.print(`${C.magenta}\t\t  ⏳ Waiting for potential Stocks ⏳\n\n\n\n\n\n`);
     }
 
     await ns.stock.nextUpdate();

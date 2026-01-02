@@ -6,6 +6,6 @@ export default {
     priceTreshold: 1000,
     minShares: 100,
     ignoreStocksFull: ["APHE", "CTYS"],
-    ignoreStocksLight: ["APHE", "CTYS", 'JGN']
+    ignoreStocksLight: ["APHE", "CTYS", 'JGN', 'ECP']
 
 }   

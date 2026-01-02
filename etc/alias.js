@@ -19,7 +19,7 @@ alias lsnet="run bin/lsnet.js"
 alias conn="run bin/conn.js"
 alias psx="run bin/psx.js"
 alias windev="run bin/windev.js"
-alias share="run bin/thread.js dist/share.js home 90"
+alias share="run bin/thread.js dist/share.js home 50"
 
 `;
 const normalized = alias

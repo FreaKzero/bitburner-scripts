@@ -30,7 +30,7 @@ export async function main(ns) {
 
      if (!inTerminal) {
       ns.print(
-        `${C.yellow}   🚨 Not in Terminal, Process disabled 🚨\n\n\n\n`
+        `${C.red}   🚨 Not in Terminal, Process disabled 🚨\n\n\n\n`
       );
       break;
     }

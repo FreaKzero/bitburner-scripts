@@ -108,11 +108,7 @@ export async function main(ns) {
   });
 
   while (true) {
-    let ui = `${C.yellow} 💰 CURRENT BUDGET: $${ns.formatNumber(getBudget())} \n`;
-
-    ui += ln;
-    ui += `${C.white}   SYM\t\t  POT\t    BOUGHT\t   CURRENT\t      DIFF\t\n`;
-    ui += ln;
+    const B = getBudget();
     const doc = eval("document");
     if (!doc.querySelector("h4")?.innerText?.includes("World Stock Exchange")) {
       goSidebar("stock market");
@@ -146,7 +142,7 @@ export async function main(ns) {
           profits: 0,
           losses: 0,
         });
- 
+
         x.findOne((a) => a.sym === stock.sym)
           .upsert((a) => {
             const [longShares, longPrice] = ns.stock.getPosition(stock.sym);
@@ -176,21 +172,37 @@ export async function main(ns) {
         stock.e.click();
       }
     }
-    ui += stocks
-      .filter((a) => a.haveStocks)
-      .map((a) => {
-        const long = pad(ns.formatNumber(a.longPrice), 8, "$", false);
-        const price = pad(ns.formatNumber(a.price), 8, "$", false);
-        const diff = pad(ns.formatNumber(a.price - a.longPrice), 8, "$", false);
-        const col = a.price - a.longPrice < 0 ? C.red : C.green;
+    
+    const l = stocks.filter((a) => a.haveStocks);
+    if (l.length > 0) {
+      let ui = ln;
+      ui += `${C.white}   SYM\t\t  POT\t    BOUGHT\t   CURRENT\t      DIFF\t\n`;
+      ui += ln;
+      ui += l
+        .map((a) => {
+          const long = pad(ns.formatNumber(a.longPrice), 8, "$", false);
+          const price = pad(ns.formatNumber(a.price), 8, "$", false);
+          const diff = pad(
+            ns.formatNumber(a.price - a.longPrice),
+            8,
+            "$",
+            false
+          );
+          const col = a.price - a.longPrice < 0 ? C.red : C.green;
 
-        return `${col} 💸 ${a.sym} \t${a.score.toFixed(
-          4
-        )}\t${long}\t${price}\t${diff}${C.reset}`;
-      })
-      .join("\n");
-    ui += "\n" + ln;
-    ns.print(ui);
+          return `${col} 💸 ${a.sym} \t${a.score.toFixed(
+            4
+          )}\t${long}\t${price}\t${diff}${C.reset}`;
+        })
+        .join("\n");
+      ui += "\n" + ln;
+      ui += `${C.yellow} 💰 CURRENT BUDGET: $${ns.formatNumber(B)} \n`;
+      ui += ln;
+
+      ns.print(ui);
+    } else {
+      ns.print(`${C.magenta}\t\t ⏳ Waiting for potential Stocks ⏳\n\n\n\n\n\n`);
+    }
 
     await ns.stock.nextUpdate();
   }
