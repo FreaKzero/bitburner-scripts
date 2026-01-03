@@ -1,6 +1,12 @@
 import { DARKWEB_PROGRAMS } from "../lib/const";
 import { C, fromFormat, setupTail } from "../lib/utils";
-import { goLocation, goSidebar, findElement, execTerm } from "../lib/ui";
+import {
+  goLocation,
+  goSidebar,
+  findElement,
+  execTerm,
+  inView,
+} from "../lib/ui";
 /** @param {import("..").NS } ns */
 export async function main(ns) {
   ns.disableLog("ALL");
@@ -13,13 +19,10 @@ export async function main(ns) {
   });
 
   while (true) {
-    const doc = eval("document");
     ns.clearLog();
-    const inTerminal = doc.getElementById("terminal-input") ? true : false;
 
-    if (!inTerminal) {
-      ns.print(`${C.yellow}   🚨 Not in Terminal, Process disabled 🚨\n\n\n\n`);
-      break;
+    if (!inView("terminal")) {
+      goSidebar("terminal");
     }
 
     const list = DARKWEB_PROGRAMS.filter((a) => !ns.fileExists(a.program));

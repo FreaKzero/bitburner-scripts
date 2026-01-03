@@ -129,6 +129,7 @@ Cities: (You are currently in ${PLAYER.city})
 \tNew Tokyo
 \tAevum
 \tIshima
+\tChongqing
 
 Or go to location given by list
 `);
@@ -145,7 +146,7 @@ Or go to location given by list
     return;
   }
 
-  if (["Volharen", "Sector-12", "New Tokyo", "Aevum", "Ishima"].includes(i)) {
+  if (["Volharen", "Sector-12", "New Tokyo", "Aevum", "Ishima", "Chongqing"].includes(i)) {
     goTravel(i);
     return;
   }
@@ -169,5 +170,6 @@ export function autocomplete(data, args) {
     "New Tokyo",
     "Aevum",
     "Ishima",
+    "Chongqing"
   ]
 }

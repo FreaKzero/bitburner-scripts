@@ -63,7 +63,7 @@ export async function main(ns) {
         await ns.sleep(500);
       }
     } else {
-      ns.print(`${C.magenta}       ⏳ Waiting for Contractwork ⏳\n\n\n`);
+      ns.print(`${C.magenta}        ⏳ Waiting for Contractwork ⏳\n\n\n`);
     }
     await ns.sleep(cfg.contractCheckInterval);
   }

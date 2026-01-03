@@ -1,5 +1,5 @@
 import { deepscan } from "../lib/scan";
-import { state } from "../lib/utils";
+import { initState } from "../lib/utils";
 import cfg from "../etc/sys";
 import { HOSTS } from '../var/cache.js';
 
@@ -10,14 +10,15 @@ export async function main(ns) {
   const home = ns.args[2] || null;
 
   const servers = deepscan(ns);
-
+  
+  const [state, setState] = initState(ns);
   if (
     host &&
     ["auto.js", "hack.js", "weak.js", "grow.js"].some((s) => script.includes(s))
   ) {
-    state(ns, "attack", host);
+    setState("attack", host);
   } else {
-    state(ns, "attack", "");
+    setState(ns, "attack", "");
   }
 
   for (const serv of servers) {

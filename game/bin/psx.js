@@ -1,4 +1,4 @@
-import { C, getRamBar, line, state, pad, setupTail } from "../lib/utils";
+import { C, getRamBar, line, pad, setupTail, initState } from "../lib/utils";
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
@@ -12,6 +12,8 @@ export async function main(ns) {
     y: 516,
   });
 
+  const [state] = initState(ns);
+  
   ns.atExit(() => {
     ns.ui.closeTail();
   });
@@ -19,7 +21,7 @@ export async function main(ns) {
   function render() {
     ns.clearLog();
     const host = "home";
-    const attacked = state(ns, "attack");
+    const attacked = state("attack");
 
     const ln = line(45, "black");
     const ram = getRamBar(ns);
@@ -31,7 +33,7 @@ export async function main(ns) {
     const processes = ns.ps(host).sort((a, b) => b.threads - a.threads);
     const ui = processes.map((a) => {
       const r = ns.getScriptRam(a.filename);
-      return ` ${pad(a.filename, 15)}\t${pad(a.threads, 3, "", false)}${pad(
+      return ` ${pad(a.filename, 15)}\t${pad(a.threads, 6, "", false)}${pad(
         ns.formatRam(r * a.threads),
         10,
         "",

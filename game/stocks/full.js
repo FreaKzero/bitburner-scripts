@@ -109,3 +109,8 @@ export async function main(ns) {
     await ns.stock.nextUpdate();
   }
 }
+
+export function autocomplete(data, args) {
+  const params = [ 'buy=', 'pot=', 'budget=', 'ignore=' ];
+  return [...params]
+}

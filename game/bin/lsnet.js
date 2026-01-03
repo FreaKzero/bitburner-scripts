@@ -1,8 +1,8 @@
-import { state, getArgs, pad, C, replaceAll, setupTail } from "../lib/utils";
-import { deepscan } from "../lib/scan";
+import { initState, getArgs, pad, C, replaceAll, setupTail } from "../lib/utils";
 import { STOCK_HOST_COLLECTION } from "../lib/const";
 import { SPECIAL_HOSTS } from "../var/cache.js";
 import cfg from "../etc/names.js";
+import {HOSTS} from '../var/cache.js';
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
@@ -14,7 +14,8 @@ export async function main(ns) {
     x: 265,
     y: 13, 
   });
- 
+  
+  const [state] = initState(ns);
   const { watch, sort, ducks, dir } = getArgs(
     ns,
     {
@@ -29,9 +30,9 @@ export async function main(ns) {
   );
 
   const render = () => {
-    const attacked = state(ns, "attack");
+    const attacked = state("attack");
     let output = "\n";
-    let list = deepscan(ns).filter((a) => !a.includes(cfg.prefixServer));
+    let list = HOSTS.filter((a) => !a.includes(cfg.prefixServer));
     list = list.map((item) => {
       const times = [
         ns.getHackTime(item),

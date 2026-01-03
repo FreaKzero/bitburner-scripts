@@ -1,10 +1,9 @@
 import { DARKWEB_PROGRAMS } from "../lib/const";
 import { C, pad, setupTail } from "../lib/utils";
-import { execTerm, } from "../lib/ui";
+import { execTerm, goSidebar, inView } from "../lib/ui";
 import { SPECIAL_HOSTS } from "../var/cache.js";
 /** @param {import("..").NS } ns */
 export async function main(ns) {
-
   setupTail(ns, {
     title: "🚪 Backdoor Daemon",
     w: 450,
@@ -13,8 +12,9 @@ export async function main(ns) {
     y: 15,
   });
   ns.disableLog("ALL");
+
   let hacked = 0;
- 
+
   const openPorts = DARKWEB_PROGRAMS.map((a) => a.program).reduce(
     (acc, cur) => {
       acc += ns.fileExists(cur) ? 1 : 0;
@@ -25,19 +25,13 @@ export async function main(ns) {
 
   while (true) {
     let O = ``;
-    const doc = eval("document");
-    const inTerminal = doc.getElementById("terminal-input") ? true : false;
-
-     if (!inTerminal) {
-      ns.print(
-        `${C.red}   🚨 Not in Terminal, Process disabled 🚨\n\n\n\n`
-      );
-      break;
+    if (!inView("terminal")) {
+      goSidebar("terminal");
     }
 
     ns.clearLog();
     for (const h of SPECIAL_HOSTS) {
-      const s = ns.getServer(h.host);
+      let s = ns.getServer(h.host);
       const skill = ns.getPlayer().skills.hacking;
       const left = h.lvl - skill;
 
@@ -54,6 +48,7 @@ export async function main(ns) {
         hacked++;
       }
 
+      s = ns.getServer(h.host);
       ns.clearLog();
       O += `${s.backdoorInstalled ? C.green : C.red}${
         s.backdoorInstalled ? " ✔️" : " ❌"
@@ -65,6 +60,6 @@ export async function main(ns) {
     }
 
     ns.print(O);
-    await ns.sleep(5 * 10000);
+    await ns.sleep(20 * 10000);
   }
 }

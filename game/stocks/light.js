@@ -1,4 +1,4 @@
-import { goSidebar } from "../lib/ui";
+import { goSidebar, inView } from "../lib/ui";
 import { fromFormat, pad, line, C, getArgs, setupTail } from "../lib/utils";
 import cfg from "../etc/stocks";
 import Store from "../lib/store";
@@ -110,7 +110,8 @@ export async function main(ns) {
   while (true) {
     const B = getBudget();
     const doc = eval("document");
-    if (!doc.querySelector("h4")?.innerText?.includes("World Stock Exchange")) {
+   
+    if (!inView('World Stock Exchange')) {
       goSidebar("stock market");
     }
 
@@ -197,7 +198,6 @@ export async function main(ns) {
         .join("\n");
       ui += "\n" + ln;
       ui += `${C.yellow} 💰 CURRENT BUDGET: $${ns.formatNumber(B)} \n`;
-      ui += ln;
 
       ns.print(ui);
     } else {
@@ -206,4 +206,10 @@ export async function main(ns) {
 
     await ns.stock.nextUpdate();
   }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars 
+export function autocomplete(data, args) {
+  const params = [ 'debug=true', 'ignore=', 'budget=' ];
+  return [...params]
 }

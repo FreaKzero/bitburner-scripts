@@ -1,10 +1,9 @@
-
 /**
  * Helper for Tailsetup - best use with windev command
  *
  * @export
- * @param {*} ns 
- * @param {{ w: number; h: number; x: number; y: number; }} [opt={}}] 
+ * @param {*} ns
+ * @param {{ w: number; h: number; x: number; y: number; }} [opt={}}]
  */
 export function setupTail(ns, opt = {}) {
   if (!opt) return;
@@ -131,30 +130,53 @@ export function disableLogs(ns, array) {
  *
  * @returns {any} - This function does not return a value but performs assertions on the input data.
  */
-export function state(ns, key, value = null) {
+export function initState(ns) {
   const F = "/var/global.json";
-  const x = ns.read(F);
-  let j;
 
-  try {
-    j = JSON.parse(x) || {};
+  const setState = (key, value = null) => {
+    const x = ns.read(F);
+    let j;
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (_e) {
-    j = {};
-  }
+    try {
+      j = JSON.parse(x) || {};
+    } catch (e) {
+      console.error(e);
+      j = {};
+    }
 
-  if (value !== null) {
-    const newj = {
-      ...j,
-      [key]: value,
-    };
+    if (value !== null) {
+      const newj = {
+        ...j,
+        [key]: value,
+      };
 
-    ns.write(F, JSON.stringify(newj), "w");
-    return newj[key];
-  } else {
-    return j[key];
-  }
+      ns.write(F, JSON.stringify(newj), "w");
+      return newj[key];
+    } else {
+      return j[key];
+    }
+  };
+
+  const getState = (key) => {
+    const json = ns.read(F);
+    try {
+      if (key) {
+        const full = JSON.parse(json);
+        if (full[key]) {
+          return full[key];
+        } else {
+          return "";
+        }
+      } else {
+        return JSON.parse(json);
+      }
+    } catch (_e) {
+      console.log(_e);
+      return {};
+    }
+  };
+
+  return [getState, setState];
 }
 
 /** @param {import("..").NS } ns */

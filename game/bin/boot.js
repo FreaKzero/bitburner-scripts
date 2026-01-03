@@ -1,9 +1,16 @@
-import { C } from "../lib/utils";
+import { C, reactClickButton } from "../lib/utils";
 import cfg from "../etc/sys";
+import {goCity, findElement} from '../etc/ui';
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
   ns.disableLog("ALL");
+  const doc = eval("document");
+  const bod = doc.getElementById('root');
+  bod.style.backgroundImage="url(https://wallpapercave.com/wp/wp9142491.jpg)";
+  bod.style.backgroundSize="contain";
+  doc.querySelectorAll('[class*="input"]')[0].style.backgroundColor = 'transparent';
+
   ns.ui.clearTerminal();
   ns.killall();
   await ns.sleep(1000);
@@ -42,5 +49,11 @@ export async function main(ns) {
 `;
 
   ns.tprint(LOGO);
-
+  goCity('foodnstuff');
+  reactClickButton('Apply to be a Part-time Employee');
+  await ns.sleep(500);
+  reactClickButton('Work');
+  await ns.sleep(500);
+  findElement('button', 'Focus', true);
+  
 }

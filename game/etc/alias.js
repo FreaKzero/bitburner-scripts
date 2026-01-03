@@ -1,25 +1,21 @@
 import { execTerm } from "../lib/ui";
 
-export function main() {
-  const alias = ` 
-unalias --all
-alias -g fl1ght="run fl1ght.exe"
-alias -g nuke="run NUKE.exebackdoor"
-alias go="run bin/go.js"
-alias stocks="stocks/full.js"
-alias focus="run bin/focus.js"
-alias boot="run bin/boot.js"
-alias dir="ls"
-alias logs="ps;run bin/logs.js"
-alias cracknet="run bin/cracknet.js"
-alias deploy="run bin/deploy.js"
-alias thread="run bin/thread.js"
-alias lsnet="run bin/lsnet.js"
-alias conn="run bin/conn.js"
-alias psx="run bin/psx.js"
-alias windev="run bin/windev.js"
-alias share="run bin/thread.js dist/share.js home"
+export function main(ns) {
 
+  let bin =  ns.ls('home', 'bin/');
+    bin = bin.map(a => {
+        const cmd = a.match(/([^\\/]+)(?=\.[^.]+$)/)?.[1]
+        return `alias ${cmd}="${a}"`;
+    }).join('\n');
+
+const alias = `
+unalias --all
+${bin}
+alias -g fl1ght="run fl1ght.exe"
+alias -g nuke="run NUKE.exe;backdoor"
+alias stocks="stocks/full.js"
+alias dir="ls"
+alias share="run bin/thread.js dist/share.js home"
 `;
 const normalized = alias
   .split('\n')

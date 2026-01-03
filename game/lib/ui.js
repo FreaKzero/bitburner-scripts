@@ -1,3 +1,32 @@
+export function checkFocus() {
+  const doc = eval("document");
+  const hasFocus = [...doc.querySelectorAll('.MuiPaper-root > .MuiTypography-h6')].find(a => a.innerText.includes('You are currently'))
+  
+  if (hasFocus) {
+    reactClickButton('Do something else simultaneously')
+  }
+}
+
+export function inView(text) {
+  const compare = text.toLowerCase();
+
+  const doc = eval("document");
+  const hasHeadline = [...doc.querySelectorAll("h4")].find((a) =>
+      a.innerText.toLowerCase().includes(compare)
+    );
+
+  if (hasHeadline) {
+    return true;
+  } else {
+    const active = document.querySelector('[class*="listitem-active"]').innerText.toLowerCase().includes(compare);
+    if (active) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 export function reactSetInput(placeholder, value) {
   const doc = eval("document");
   const input = Array.from(doc.querySelectorAll("input")).find(
@@ -81,7 +110,6 @@ export function reactClickButton(text) {
   props.onClick(fakeEvent);
 }
 
-
 /**
  * Go to any Sidebar Menu Selection
  * terminal, script editor, active scripts, create program, stats, factions, augmentations, hacknet, city, travel, stock market
@@ -92,6 +120,7 @@ export function reactClickButton(text) {
  */
 export function goSidebar(where) {
   const doc = eval("document");
+  checkFocus();
   const sidebar = [...doc.querySelectorAll(".MuiListItemText-root")];
   const match = sidebar.filter((s) =>
     s.textContent.toLocaleLowerCase().includes(where.toLocaleLowerCase())
