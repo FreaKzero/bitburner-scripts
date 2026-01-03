@@ -7,7 +7,7 @@ import {
   line,
 } from "../lib/utils";
 import cfg from "../etc/names";
-import { execTerm } from "../lib/ui";
+import { execTerm, findElement, inView } from "../lib/ui";
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
@@ -26,8 +26,8 @@ export async function main(ns) {
     title: ` 🗄️ Server Daemon (${budget})`,
     w: 500,
     h: 200,
-    x: 1622,
-    y: 873,
+    x: 1640,
+    y: 361,
   });
 
   const SERVER_NEW_RAM = 8;
@@ -64,12 +64,22 @@ export async function main(ns) {
   const [state] = initState(ns);
 
   while (true) {
+    let hadFocus = inView("focus");
+
     const AllServers = getServerCollection();
     const servers = AllServers.filter(
       (a) => a.ram < ns.getPurchasedServerMaxRam(a.name)
     );
     const B = ns.formatNumber(getBudget());
     let O = ln;
+
+    if (numServer >= maxServer) {
+      ns.clearLog();
+      ns.print(
+        `   🔥 ${C.magenta}Maximum of Purchaseable Servers reached${C.reset} 🔥\n\n\n\n\n\n\n\n\n\n`
+      );
+      ns.exit();
+    }
 
     if (!servers.length) {
       if (ns.getPurchasedServerCost(SERVER_NEW_RAM) < getBudget()) {
@@ -79,6 +89,9 @@ export async function main(ns) {
         );
         if (autodeploy) {
           execTerm(`deploy dist/auto.js ${state("attack")} `);
+          if (hadFocus) {
+            findElement("button", "Focus", true);
+          }
         }
       }
     }
@@ -102,13 +115,6 @@ export async function main(ns) {
     O += ln;
     ns.print(O);
 
-    if (numServer >= maxServer) {
-      ns.clearLog();
-      ns.print(
-        `   🔥 ${C.magenta}Maximum of Purchaseable Servers reached${C.reset} 🔥\n\n\n\n\n\n\n\n\n\n`
-      );
-      ns.exit();
-    }
     await ns.sleep(1500);
   }
 }

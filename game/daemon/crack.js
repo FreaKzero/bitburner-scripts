@@ -12,10 +12,10 @@ export async function main(ns) {
   ns.disableLog("ALL");
   setupTail(ns, {
     title: "💥 Autocrack Daemon",
-    w: 450,
+    w: 500,
     h: 200,
-    x: 1147,
-    y: 234,
+    x: 1640,
+    y: 361,
   });
 
   while (true) {
@@ -29,7 +29,7 @@ export async function main(ns) {
 
     if (list.length < 1) {
       ns.print(
-        `${C.yellow}    🔥 All cracks bought, used, deployed 🔥\n\n\n\n`
+        `${C.yellow}        🔥 All cracks bought, used, deployed 🔥\n\n\n\n`
       );
       ns.exit();
     }

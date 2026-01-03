@@ -26,9 +26,9 @@ export async function main(ns) {
   setupTail(ns, {
     title: " 📈 Stonks Watcher (API)",
     w: 660,
-    h: 300,
-    x: 264,
-    y: 50,
+    h: 261,
+    x: 920,
+    y: 15,
   });
 
   const POT = pot / 100;
@@ -103,14 +103,17 @@ export async function main(ns) {
 
       ns.print(O);
     } else {
-      ns.print(`${C.magenta}\t\t  ⏳ Waiting for potential Stocks ⏳\n\n\n\n\n\n`);
+      ns.print(
+        `${C.magenta}\t\t  ⏳ Waiting for potential Stocks ⏳\n\n\n\n\n\n`
+      );
     }
 
     await ns.stock.nextUpdate();
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function autocomplete(data, args) {
-  const params = [ 'buy=', 'pot=', 'budget=', 'ignore=' ];
-  return [...params]
+  const params = ["buy=", "pot=", "budget=", "ignore="];
+  return [...params];
 }

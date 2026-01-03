@@ -1,25 +1,35 @@
 export function exitFocus() {
   const doc = eval("document");
-  const hasFocus = [...doc.querySelectorAll('.MuiPaper-root > .MuiTypography-h6')].find(a => a.innerText.includes('You are currently'))
-  
+  const hasFocus = [
+    ...doc.querySelectorAll(".MuiPaper-root > .MuiTypography-h6"),
+  ].find((a) => a.innerText.includes("You are currently"));
+
   if (hasFocus) {
-    reactClickButton('Do something else simultaneously')
+    reactClickButton("Do something else simultaneously");
   }
 }
 
 export function inView(text) {
-  exitFocus();
   const compare = text.toLowerCase();
-
   const doc = eval("document");
+
   const hasHeadline = [...doc.querySelectorAll("h4")].find((a) =>
-      a.innerText.toLowerCase().includes(compare)
+    a.innerText.toLowerCase().includes(compare)
+  );
+
+  if (text === "focus") {
+    return [...doc.querySelectorAll(".MuiPaper-root > .MuiTypography-h6")].find(
+      (a) => a?.innerText?.includes("You are currently")
     );
+  }
 
   if (hasHeadline) {
     return true;
   } else {
-    const active = document.querySelector('[class*="listitem-active"]').innerText.toLowerCase().includes(compare);
+    const active = document
+      .querySelector('[class*="listitem-active"]')
+      ?.innerText.toLowerCase()
+      ?.includes(compare);
     if (active) {
       return true;
     }
@@ -77,16 +87,62 @@ export function reactSetInput(placeholder, value) {
   props.onChange(fakeEvent);
 }
 
-export function reactClickButton(text) {
-  const doc = eval("document");
-  const btn = Array.from(doc.querySelectorAll("button")).find(
-    (b) => b.innerText.trim() === text
+export function reactFocus(el, value) {
+  if (!(el instanceof HTMLElement)) return console.error("Invalid element");
+
+  const fiberKey = Object.keys(el).find(
+    (k) => k.startsWith("__reactFiber$") || k.startsWith("__reactProps$")
   );
 
-  if (!btn) return console.error("Button not found:", text);
+  if (!fiberKey) return console.error("React Fiber not found");
+
+  const fiber = el[fiberKey];
+
+  const props =
+    fiber.memoizedProps || fiber.pendingProps || fiber.return?.memoizedProps;
+
+  el.focus();
+
+  props?.onFocus?.({
+    isTrusted: true,
+    type: "focus",
+    target: el,
+    currentTarget: el,
+  });
+
+  const nativeSetter = Object.getOwnPropertyDescriptor(
+    Object.getPrototypeOf(el),
+    "value"
+  )?.set;
+
+  if (!nativeSetter) return console.error("No native value setter");
+
+  nativeSetter.call(el, value);
+
+  props?.onChange?.({
+    isTrusted: true,
+    type: "change",
+    target: el,
+    currentTarget: el,
+  });
+}
+
+export function reactClickButton(target) {
+  const doc = eval("document");
+
+  const btn =
+    typeof target === "string"
+      ? Array.from(doc.querySelectorAll("button")).find(
+          b => b.innerText.trim() === target
+        )
+      : target instanceof HTMLElement
+        ? target
+        : null;
+
+  if (!btn) return console.error("Button not found:", target);
 
   const fiberKey = Object.keys(btn).find(
-    (k) => k.startsWith("__reactFiber$") || k.startsWith("__reactProps$")
+    k => k.startsWith("__reactFiber$") || k.startsWith("__reactProps$")
   );
 
   if (!fiberKey) return console.error("React Fiber not found");
@@ -94,9 +150,11 @@ export function reactClickButton(text) {
   const fiber = btn[fiberKey];
 
   const props =
-    fiber.memoizedProps || fiber.pendingProps || fiber.return?.memoizedProps;
+    fiber.memoizedProps ||
+    fiber.pendingProps ||
+    fiber.return?.memoizedProps;
 
-  if (!props || typeof props.onClick !== "function")
+  if (typeof props?.onClick !== "function")
     return console.error("onClick handler not found");
 
   const fakeEvent = {
@@ -263,15 +321,23 @@ export function execTerm(command) {
   goSidebar("terminal");
   const doc = eval("document");
   const terminalInput = doc.getElementById("terminal-input");
-  terminalInput.value = command;
+  if (terminalInput) {
+    reactFocus(terminalInput);
+    terminalInput.value = command;
 
-  const handler = Object.keys(terminalInput)[1];
-  terminalInput[handler].onChange({ target: terminalInput });
-  const enterEvent = new KeyboardEvent("keydown", {
-    bubbles: true,
-    cancelable: false,
-    key: "Enter",
-  });
+    const handler = Object.keys(terminalInput)[1];
+    terminalInput[handler].onChange({ target: terminalInput });
+    const enterEvent = new KeyboardEvent("keydown", {
+      bubbles: true,
+      cancelable: false,
+      key: "Enter",
+    });
 
-  terminalInput.dispatchEvent(enterEvent);
+    terminalInput.dispatchEvent(enterEvent);
+  }
+}
+
+export function save() {
+  const saveBtn = [...document.querySelectorAll('.react-draggable svg')].filter(e => e.getAttribute("data-testid") === "SaveIcon")[0];
+  reactClickButton(saveBtn.parentElement);
 }

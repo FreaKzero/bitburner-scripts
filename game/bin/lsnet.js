@@ -1,8 +1,15 @@
-import { initState, getArgs, pad, C, replaceAll, setupTail } from "../lib/utils";
+import {
+  initState,
+  getArgs,
+  pad,
+  C,
+  replaceAll,
+  setupTail,
+} from "../lib/utils";
 import { STOCK_HOST_COLLECTION } from "../lib/const";
 import { SPECIAL_HOSTS } from "../var/cache.js";
 import cfg from "../etc/names.js";
-import {HOSTS} from '../var/cache.js';
+import { HOSTS } from "../var/cache.js";
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
@@ -11,10 +18,10 @@ export async function main(ns) {
     title: `🌐 Network Monitor`,
     w: 850,
     h: 800,
-    x: 265,
-    y: 13, 
+    x: 70,
+    y: 13,
   });
-  
+
   const [state] = initState(ns);
   const { watch, sort, ducks, dir } = getArgs(
     ns,

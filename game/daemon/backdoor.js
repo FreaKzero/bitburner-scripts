@@ -1,15 +1,15 @@
 import { DARKWEB_PROGRAMS } from "../lib/const";
 import { C, pad, setupTail } from "../lib/utils";
-import { execTerm, goSidebar, inView } from "../lib/ui";
+import { execTerm, exitFocus, findElement, goSidebar, inView } from "../lib/ui";
 import { SPECIAL_HOSTS } from "../var/cache.js";
 /** @param {import("..").NS } ns */
 export async function main(ns) {
   setupTail(ns, {
     title: "🚪 Backdoor Daemon",
-    w: 450,
+    w: 500,
     h: 200,
-    x: 1145,
-    y: 15,
+    x: 1640,
+    y: 155,
   });
   ns.disableLog("ALL");
 
@@ -24,10 +24,8 @@ export async function main(ns) {
   );
 
   while (true) {
+    const hadFocus = inView("focus");
     let O = ``;
-    if (!inView("terminal")) {
-      goSidebar("terminal");
-    }
 
     ns.clearLog();
     for (const h of SPECIAL_HOSTS) {
@@ -36,6 +34,14 @@ export async function main(ns) {
       const left = h.lvl - skill;
 
       if (!s.backdoorInstalled && skill >= h.lvl && h.ports <= openPorts) {
+        if (hadFocus) {
+          exitFocus();
+        }
+
+        if (!inView("terminal")) {
+          goSidebar("terminal");
+        }
+
         ns.print(`\t   Please Wait ...`);
         ns.print(`\t   🖥️ Backdooring  ${h.host}\n\n\n\n`);
         ns.exec("bin/conn.js", "home", 1, h.host, "true");
@@ -56,10 +62,15 @@ export async function main(ns) {
     }
 
     if (hacked >= SPECIAL_HOSTS.length && openPorts >= 5) {
-      O = `${C.magenta}   🕶️ All Faction Hosts are Backdoored 🕶️\n\n\n\n`;
+      O = `${C.magenta}       🕶️ All Faction Hosts are Backdoored 🕶️\n\n\n\n`;
     }
 
     ns.print(O);
+
+    if (hadFocus) {
+      findElement("button", "Focus", true);
+    }
+
     await ns.sleep(20 * 10000);
   }
 }

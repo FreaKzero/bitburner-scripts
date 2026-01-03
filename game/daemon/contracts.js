@@ -9,14 +9,10 @@ export async function main(ns) {
   ns.disableLog("ALL");
   setupTail(ns, {
     title: "📜 Contractwork Daemon",
-    w: 450,
-    h: 150,
-    x: 1688,
-    y: 10,
-  });
-
-  ns.atExit(() => {
-    ns.ui.closeTail();
+    w: 500,
+    h: 200,
+    x: 1640,
+    y: 120,
   });
 
   const getContractCollection = () => {
@@ -63,7 +59,7 @@ export async function main(ns) {
         await ns.sleep(500);
       }
     } else {
-      ns.print(`${C.magenta}        ⏳ Waiting for Contractwork ⏳\n\n\n`);
+      ns.print(`${C.magenta}\t    ⏳ Waiting for Contractwork ⏳\n\n\n\n`);
     }
     await ns.sleep(cfg.contractCheckInterval);
   }

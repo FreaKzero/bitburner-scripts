@@ -1,8 +1,13 @@
-import { C, pad, line } from "../lib/utils";
+import { C, pad, line, setupTail } from "../lib/utils";
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
   const reset = ns.args[0] && ns.args[0].toLowerCase() === "reset";
+
+  setupTail(ns, {
+    x: 922,
+    y: 286,
+  });
 
   if (reset) {
     ns.write("var/stocks.json", JSON.stringify([]), "w");

@@ -20,13 +20,12 @@ export async function main(ns) {
   });
 
   const BUDGET = budget ? fromFormat(budget) : startMoney;
-
   setupTail(ns, {
     title: `🕸️ Hacknet Daemon (${budget})`,
     w: 500,
     h: 200,
-    x: 1622,
-    y: 873,
+    x: 1640,
+    y: 361,
   });
 
   const getHacknetCollection = () => {
@@ -91,7 +90,7 @@ export async function main(ns) {
         ns.clearLog();
         ns.print(`${C.red} \t       🚨 Budget too low 🚨${C.reset}`);
         ns.print(
-          `\t   ${C.red} New Node costs $${ns.formatNumber(nodePrice)}${
+          `\t    ${C.red} New Node costs $${ns.formatNumber(nodePrice)}${
             C.reset
           }\n\n\n`
         );
