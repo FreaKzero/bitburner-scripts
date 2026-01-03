@@ -11,8 +11,8 @@ export async function main(ns) {
     title: "📜 Contractwork Daemon",
     w: 450,
     h: 150,
-    x: 1151,
-    y: 671,
+    x: 1688,
+    y: 10,
   });
 
   ns.atExit(() => {

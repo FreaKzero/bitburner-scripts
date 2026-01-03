@@ -10,9 +10,7 @@ export async function main(ns) {
     ns.ui.setTailTitle('DEVELOPMENT');
     ns.ui.resizeTail(w, h);
     ns.ui.moveTail(392, 563);
-    ns.atExit(() => {
-        ns.ui.closeTail();
-    })
+    
     ns.disableLog('ALL');
     while(true) {
         ns.clearLog();

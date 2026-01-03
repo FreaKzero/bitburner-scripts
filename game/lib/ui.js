@@ -1,4 +1,4 @@
-export function checkFocus() {
+export function exitFocus() {
   const doc = eval("document");
   const hasFocus = [...doc.querySelectorAll('.MuiPaper-root > .MuiTypography-h6')].find(a => a.innerText.includes('You are currently'))
   
@@ -8,6 +8,7 @@ export function checkFocus() {
 }
 
 export function inView(text) {
+  exitFocus();
   const compare = text.toLowerCase();
 
   const doc = eval("document");
@@ -119,8 +120,8 @@ export function reactClickButton(text) {
  * @param {"terminal" | "script editor" | "active scripts" | "create program" | "stats" | "factions" | "augmentations" | "hacknet" | "city" | "travel" | "stock market"} where
  */
 export function goSidebar(where) {
+  exitFocus();
   const doc = eval("document");
-  checkFocus();
   const sidebar = [...doc.querySelectorAll(".MuiListItemText-root")];
   const match = sidebar.filter((s) =>
     s.textContent.toLocaleLowerCase().includes(where.toLocaleLowerCase())

@@ -1,6 +1,13 @@
-import { C, fromFormat, getArgs, initState, line } from "../lib/utils";
+import {
+  setupTail,
+  C,
+  fromFormat,
+  getArgs,
+  initState,
+  line,
+} from "../lib/utils";
 import cfg from "../etc/names";
-import {execTerm} from '../lib/ui';
+import { execTerm } from "../lib/ui";
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
@@ -8,12 +15,20 @@ export async function main(ns) {
   const startMoney = ns.getPlayer().money;
   const ln = `${line(51, "black")}${C.reset}\n`;
 
-  let {autodeploy, budget } = getArgs(ns, {
+  const { autodeploy, budget } = getArgs(ns, {
     budget: undefined,
-    autodeploy: false
+    autodeploy: false,
   });
 
-  budget = budget ? fromFormat(budget) : startMoney;
+  const BUDGET = budget ? fromFormat(budget) : startMoney;
+
+  setupTail(ns, {
+    title: ` 🗄️ Server Daemon (${budget})`,
+    w: 500,
+    h: 200,
+    x: 1622,
+    y: 873,
+  });
 
   const SERVER_NEW_RAM = 8;
   const numServer = ns.getPurchasedServers().length;
@@ -43,11 +58,8 @@ export async function main(ns) {
 
   const getBudget = () => {
     const money = ns.getPlayer().money;
-    return money + budget - startMoney;
+    return money + BUDGET - startMoney;
   };
-
-  ns.ui.openTail();
-  ns.ui.setTailTitle(" 🗄️ Server Daemon");
 
   const [state] = initState(ns);
 
@@ -86,19 +98,23 @@ export async function main(ns) {
     }
     ns.clearLog();
     O += ln;
-    O += ` 💰 CURRENT BUDGET: $${B}\n`;
+    O += ` 💰 ${C.yellow}CURRENT BUDGET: $${B} ${C.reset}\n`;
     O += ln;
     ns.print(O);
 
     if (numServer >= maxServer) {
-      ns.print(`Maximum of Purchaseable Servers reached`);
+      ns.clearLog();
+      ns.print(
+        `   🔥 ${C.magenta}Maximum of Purchaseable Servers reached${C.reset} 🔥\n\n\n\n\n\n\n\n\n\n`
+      );
       ns.exit();
     }
     await ns.sleep(1500);
   }
 }
 
-export function autocomplete(data,args) {
-  const params = ['budget=', 'autodeploy=true'] 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function autocomplete(data, args) {
+  const params = ["budget=", "autodeploy=true"];
   return [...params];
 }

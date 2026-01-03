@@ -5,33 +5,34 @@ import cfg from "../etc/names";
 export async function main(ns) {
   ns.disableLog("ALL");
 
-  setupTail(ns, {
-    title: "🕸️ Hacknet Daemon",
-    w: 500,
-    h: 200,
-    x: 1153,
-    y: 413,
-  });
-
   const startMoney = ns.getPlayer().money;
   const ln = `${line(51, "black")}${C.reset}\n`;
-
+  const maxServer = ns.hacknet.maxNumNodes();
+  const numServer = ns.hacknet.numNodes();
   const MAX = {
     ram: 64,
     cores: 16,
     level: 200,
   };
 
-  let { budget } = getArgs(ns, {
+  const { budget } = getArgs(ns, {
     budget: undefined,
   });
 
-  budget = budget ? fromFormat(budget) : startMoney;
+  const BUDGET = budget ? fromFormat(budget) : startMoney;
+
+  setupTail(ns, {
+    title: `🕸️ Hacknet Daemon (${budget})`,
+    w: 500,
+    h: 200,
+    x: 1622,
+    y: 873,
+  });
 
   const getHacknetCollection = () => {
     const collection = [];
 
-    for (var i = 0; i < ns.hacknet.numNodes(); i++) {
+    for (var i = 0; i < numServer; i++) {
       const { ram, level, cores } = ns.hacknet.getNodeStats(i);
       collection.push({
         ram,
@@ -65,7 +66,7 @@ export async function main(ns) {
 
   const getBudget = () => {
     const money = ns.getPlayer().money;
-    return money + budget - startMoney;
+    return money + BUDGET - startMoney;
   };
 
   while (true) {
@@ -84,6 +85,18 @@ export async function main(ns) {
     if (nodes.length < 1) {
       if (nodePrice < getBudget()) {
         ns.hacknet.purchaseNode();
+      }
+
+      if (nodePrice > BUDGET) {
+        ns.clearLog();
+        ns.print(`${C.red} \t       🚨 Budget too low 🚨${C.reset}`);
+        ns.print(
+          `\t   ${C.red} New Node costs $${ns.formatNumber(nodePrice)}${
+            C.reset
+          }\n\n\n`
+        );
+
+        ns.exit();
       }
     }
 
@@ -124,6 +137,20 @@ export async function main(ns) {
     O += ln;
 
     ns.print(O);
-    await ns.sleep(2500);
+
+    if (numServer >= maxServer) {
+      ns.clearLog();
+      ns.print(
+        `   🔥 ${C.magenta}Maximum of Purchaseable Nodes reached${C.reset} 🔥\n\n\n\n\n\n\n\n\n\n`
+      );
+      ns.exit();
+    }
+    await ns.sleep(1500);
   }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function autocomplete(data, args) {
+  const params = ["budget="];
+  return [...params];
 }
