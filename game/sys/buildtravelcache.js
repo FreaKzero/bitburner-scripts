@@ -1,3 +1,4 @@
+import { $ } from "../lib/ui";
 import { fromFormat } from "../lib/utils";
 import { goTravel } from "./lib/ui";
 
@@ -24,8 +25,8 @@ export async function main(ns) {
     let obj = {city: city};
     goTravel(city);
     await ns.sleep(1500);
-    const doc = eval("document");
-    obj.locations = [...doc.querySelectorAll(`span[aria-label]`)].map((e) => e.getAttribute("aria-label"))
+    
+    obj.locations = $('span[aria-label]').map((e) => e.getAttribute("aria-label"))
     travelmap.push(obj);
   } 
   

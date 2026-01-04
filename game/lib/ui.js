@@ -1,3 +1,15 @@
+export function $(selector) {
+   const doc = eval("document");
+   const elements = [...doc.querySelectorAll(selector)];
+   return elements;
+}
+
+export function $$(selector) {
+   const doc = eval("document");
+   const elements = [...doc.querySelector(selector)];
+   return elements;
+}
+
 /**
  * Exit the current "focus" state if a focus dialog is active.
  *
@@ -7,10 +19,8 @@
  * @export
  */
 export function exitFocus() {
-  const doc = eval("document");
-  const hasFocus = [
-    ...doc.querySelectorAll(".MuiPaper-root > .MuiTypography-h6"),
-  ].find((a) => a.innerText.includes("You are currently"));
+  const hasFocus = $(".MuiPaper-root > .MuiTypography-h6")
+  .find((a) => a.innerText.includes("You are currently"));
 
   if (hasFocus) {
     reactClickButton("Do something else simultaneously");
@@ -31,14 +41,13 @@ export function exitFocus() {
  */
 export function inView(text) {
   const compare = text.toLowerCase();
-  const doc = eval("document");
 
-  const hasHeadline = [...doc.querySelectorAll("h4")].find((a) =>
+  const hasHeadline = $('h4').find((a) =>
     a.innerText.toLowerCase().includes(compare)
   );
 
   if (text === "focus") {
-    return [...doc.querySelectorAll(".MuiPaper-root > .MuiTypography-h6")].find(
+    return $(".MuiPaper-root > .MuiTypography-h6").find(
       (a) => a?.innerText?.includes("You are currently")
     );
   }
@@ -46,9 +55,7 @@ export function inView(text) {
   if (hasHeadline) {
     return true;
   } else {
-    const doc = eval("document");
-    const active = doc
-      .querySelector('[class*="listitem-active"]')
+    const active = $('[class*="listitem-active"]')
       ?.innerText.toLowerCase()
       ?.includes(compare);
     if (active) {
@@ -70,8 +77,7 @@ export function inView(text) {
  * @param {string} value - Value to set
  */
 export function reactSetInput(placeholder, value) {
-  const doc = eval("document");
-  const input = Array.from(doc.querySelectorAll("input")).find(
+  const input = $('input').find(
     (i) => i.placeholder === placeholder
   );
 
@@ -178,11 +184,10 @@ export function reactFocus(el, value) {
  * @param {string|HTMLElement} target - Button text or element
  */
 export function reactClickButton(target) {
-  const doc = eval("document");
 
   const btn =
     typeof target === "string"
-      ? Array.from(doc.querySelectorAll("button")).find(
+      ? $('button').find(
           b => b.innerText.toLowerCase().trim() === target.toLowerCase()
         )
       : target instanceof HTMLElement
@@ -233,9 +238,7 @@ export function reactClickButton(target) {
  */
 export function goSidebar(where) {
   exitFocus();
-  const doc = eval("document");
-  const sidebar = [...doc.querySelectorAll(".MuiListItemText-root")];
-  const match = sidebar.filter((s) =>
+  const match = $(".MuiListItemText-root").filter((s) =>
     s.textContent.toLocaleLowerCase().includes(where.toLocaleLowerCase())
   );
 
@@ -255,9 +258,8 @@ export function goSidebar(where) {
  * @param {string} w - Partial city location name
  */
 export function goCity(w) {
-  const doc = eval("document");
   goSidebar("city");
-  const locs = [...doc.querySelectorAll(`span[aria-label]`)].map((e) =>
+  const locs = $('span[aria-label]').map((e) =>
     e.getAttribute("aria-label")
   );
   const found = locs
@@ -265,7 +267,7 @@ export function goCity(w) {
     .findIndex((a) => a > -1);
 
   if (found) {
-    const node = doc.querySelector(`span[aria-label="${locs[found]}"]`);
+    const node = $('span[aria-label="${locs[found]}"]')
     if (node) {
       node.click();
     }
@@ -281,9 +283,8 @@ export function goCity(w) {
  * @returns {string[]} List of city location names
  */
 export function getCityLocations() {
-  const doc = eval("document");
   goSidebar("city");
-  return [...doc.querySelectorAll(`span[aria-label]`)].map((e) =>
+  return $('span[aria-label]').map((e) =>
     e.getAttribute("aria-label")
   );
 }
@@ -297,8 +298,8 @@ export function getCityLocations() {
  * @export
  */
 export function acceptConfirm() {
-  const doc = eval("document");
-  const dialog = Array.from(doc.querySelectorAll('div[class*="paper"]')).at(-1);
+  // TODO remove the .at(-1)
+  const dialog = $('div[class*="paper"]').at(-1);
   const btns = dialog.querySelectorAll("button");
   btns[1].click();
 }
@@ -315,11 +316,8 @@ export function acceptConfirm() {
  * @param {"Volharen" | "Sector-12" | "New Tokyo" | "Aevum" | "Ishima"} where
  */
 export function goTravel(where) {
-  const doc = eval("document");
   goSidebar("travel");
-
-  const cities = doc.querySelectorAll('[class*="travel"]');
-  const find = Array.from(cities).find((a) => a.innerText.trim() === where[0]);
+  const find = $('travel').find((a) => a.innerText.trim() === where[0]);
 
   if (find) {
     find.click();
@@ -344,11 +342,9 @@ export function goTravel(where) {
  * @param {"T" | "G" | "U" | "S" | "$" | "H"} where
  */
 export function goLocation(where) {
-  const doc = eval("document");
   goSidebar("city");
 
-  const cities = doc.querySelectorAll('[class*="location"]');
-  const find = Array.from(cities).find(
+  const find = $('class*="location"').find(
     (a) =>
       !a.getAttribute("aria-label").toLowerCase().includes("travel") &&
       !a.getAttribute("aria-label").toLowerCase().includes("slums") &&
@@ -372,9 +368,7 @@ export function goLocation(where) {
  * @returns {HTMLElement|undefined} Found element if `doClick` is false
  */
 export async function findElement(htmlClass, textInc, doClick = true) {
-  const doc = eval("document");
-  const sidebar = [...doc.querySelectorAll(htmlClass)];
-  const match = sidebar.filter((s) =>
+  const match = $(htmlClass).filter((s) =>
     s.textContent.toLowerCase().includes(textInc.toLowerCase())
   );
 
@@ -396,8 +390,8 @@ export async function findElement(htmlClass, textInc, doClick = true) {
  */
 export function execTerm(command) {
   goSidebar("terminal");
-  const doc = eval("document");
-  const terminalInput = doc.getElementById("terminal-input");
+  const terminalInput = $$("#terminal-input");
+
   if (terminalInput) {
     reactFocus(terminalInput);
     terminalInput.value = command;
@@ -423,6 +417,6 @@ export function execTerm(command) {
  * @export
  */
 export function save() {
-  const saveBtn = [...doc.querySelectorAll('.react-draggable svg')].filter(e => e.getAttribute("data-testid") === "SaveIcon")[0];
+  const saveBtn =  $('.react-draggable svg').filter(e => e.getAttribute("data-testid") === "SaveIcon")[0];
   reactClickButton(saveBtn.parentElement);
 }

@@ -1,3 +1,4 @@
+import { $ } from "../lib/ui";
 import { line } from "../lib/utils";
 
 /** @param {import("..").NS } ns */
@@ -8,9 +9,8 @@ export async function main(ns) {
      ns.ui.resizeTail(500, 200);
     ns.disableLog('ALL');
     while(true) {
-        ns.clearLog();
-        const doc = eval('document');
-        const dragWindows = [...doc.querySelectorAll('.drag > h6')];
+        ns.clearLog();        
+        const dragWindows = $('.drag > h6');
         if (dragWindows) {
             const match = dragWindows.filter((w) => w.textContent.includes(namehook));
            

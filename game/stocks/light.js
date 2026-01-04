@@ -1,4 +1,4 @@
-import { goSidebar, inView } from "../lib/ui";
+import { $, goSidebar, inView } from "../lib/ui";
 import { fromFormat, pad, line, C, getArgs, setupTail } from "../lib/utils";
 import cfg from "../etc/stocks";
 import Store from "../lib/store";
@@ -92,14 +92,14 @@ export async function main(ns) {
     };
   }
 
-  function readAll(doc) {
-    return [...doc.querySelectorAll(".MuiPaper-root span > p")]
+  function readAll() {
+    return $(".MuiPaper-root span > p")
       .map((n) => parseLine(n.innerText, n))
       .filter(Boolean);
   }
 
   ns.atExit(() => {
-    readAll(eval("document"))
+    readAll()
       .filter((a) => a.haveStocks)
       .forEach((a) => {
         ns.stock.sellStock(a.sym, a.longShares);
@@ -109,14 +109,13 @@ export async function main(ns) {
 
   while (true) {
     const B = getBudget();
-    const doc = eval("document");
    
     if (!inView('World Stock Exchange')) {
       goSidebar("stock market");
     }
 
     ns.clearLog();
-    const stocks = readAll(doc).sort((a, b) => b.score - a.score);
+    const stocks = readAll().sort((a, b) => b.score - a.score);
     if (debug) {
       console.clear();
       console.table(stocks);
