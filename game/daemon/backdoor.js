@@ -12,9 +12,6 @@ export async function main(ns) {
     y: 155,
   });
   ns.disableLog("ALL");
-
-  let hacked = 0;
-
   const openPorts = DARKWEB_PROGRAMS.map((a) => a.program).reduce(
     (acc, cur) => {
       acc += ns.fileExists(cur) ? 1 : 0;
@@ -24,6 +21,7 @@ export async function main(ns) {
   );
 
   while (true) {
+    let hacked = 0;
     const hadFocus = inView("focus");
     let O = ``;
 
@@ -45,20 +43,20 @@ export async function main(ns) {
         ns.print(`\t   Please Wait ...`);
         ns.print(`\t   🖥️ Backdooring  ${h.host}\n\n\n\n`);
         ns.exec("bin/conn.js", "home", 1, h.host, "true");
-        await ns.sleep(30000);
-        hacked++;
+        await ns.sleep(10000);
         execTerm("home");
       }
 
-      if (s.backdoorInstalled) {
-        hacked++;
-      }
-
       s = ns.getServer(h.host);
+      
       ns.clearLog();
       O += `${s.backdoorInstalled ? C.green : C.red}${
         s.backdoorInstalled ? " ✔️" : " ❌"
       }  ${pad(left > 0 ? left : 0, 3, "", false)}  ${h.host} ${C.reset}\n`;
+
+      if (s.backdoorInstalled) {
+        hacked++;
+      }
     }
 
     if (hacked >= SPECIAL_HOSTS.length && openPorts >= 5) {

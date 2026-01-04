@@ -1,12 +1,37 @@
+/**
+ * Select multiple DOM elements using a CSS selector.
+ *
+ * This is a lightweight helper that returns **all** matching elements
+ * as a plain array (not a NodeList).
+ *
+ * Uses `eval("document")` intentionally to avoid scoping or sandbox
+ * issues in certain execution environments (e.g. userscripts).
+ *
+ * @export
+ * @param {string} selector - CSS selector to query
+ * @returns {HTMLElement[]} Array of matching elements
+ */
 export function $(selector) {
-   const doc = eval("document");
-   const elements = [...doc.querySelectorAll(selector)];
-   return elements;
+  const doc = eval("document");
+  const elements = [...doc.querySelectorAll(selector)];
+  return elements;
 }
 
+/**
+ * Select the first DOM element matching a CSS selector.
+ *
+ * Returns `null` if no element matches the selector.
+ *
+ * Uses `eval("document")` intentionally to avoid scoping or sandbox
+ * issues in certain execution environments (e.g. userscripts).
+ *
+ * @export
+ * @param {string} selector - CSS selector to query
+ * @returns {HTMLElement|null} First matching element or null
+ */
 export function $$(selector) {
-   const doc = eval("document");
-   return doc.querySelector(selector);
+  const doc = eval("document");
+  return doc.querySelector(selector);
 }
 
 /**
@@ -54,7 +79,7 @@ export function inView(text) {
   if (hasHeadline) {
     return true;
   } else {
-    const active = $('[class*="listitem-active"]')
+    const active = $$('[class*="listitem-active"]')
       ?.innerText.toLowerCase()
       ?.includes(compare);
     if (active) {
