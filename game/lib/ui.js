@@ -1,3 +1,11 @@
+/**
+ * Exit the current "focus" state if a focus dialog is active.
+ *
+ * Detects the Bitburner focus modal (e.g. "You are currently …")
+ * and programmatically clicks the option to continue without focus.
+ *
+ * @export
+ */
 export function exitFocus() {
   const doc = eval("document");
   const hasFocus = [
@@ -9,6 +17,18 @@ export function exitFocus() {
   }
 }
 
+/**
+ * Check whether a given view or context is currently visible/active.
+ *
+ * - Searches for matching `<h4>` headlines
+ * - Falls back to checking the currently active list item
+ * - Special case: `"focus"` checks for the focus dialog headline
+ *
+ * @export
+ * @param {string} text - Case-insensitive text to search for
+ * @returns {boolean|HTMLElement} `true` if found, `false` otherwise.
+ * If `text === "focus"`, returns the matching HTMLElement instead.
+ */
 export function inView(text) {
   const compare = text.toLowerCase();
   const doc = eval("document");
@@ -38,6 +58,16 @@ export function inView(text) {
   return false;
 }
 
+/**
+ * Programmatically set the value of a React-controlled `<input>` element.
+ *
+ * Locates an input by its placeholder text, sets its native value,
+ * and manually triggers React's `onChange` handler via the internal Fiber.
+ *
+ * @export
+ * @param {string} placeholder - Placeholder text of the target input
+ * @param {string} value - Value to set
+ */
 export function reactSetInput(placeholder, value) {
   const doc = eval("document");
   const input = Array.from(doc.querySelectorAll("input")).find(
@@ -87,6 +117,16 @@ export function reactSetInput(placeholder, value) {
   props.onChange(fakeEvent);
 }
 
+/**
+ * Focus a React-controlled input element and optionally set its value.
+ *
+ * Triggers native focus, calls React's `onFocus`, updates the value via
+ * the native setter, and finally fires React's `onChange`.
+ *
+ * @export
+ * @param {HTMLElement} el - Target element
+ * @param {string} value - Value to set after focusing
+ */
 export function reactFocus(el, value) {
   if (!(el instanceof HTMLElement)) return console.error("Invalid element");
 
@@ -127,6 +167,15 @@ export function reactFocus(el, value) {
   });
 }
 
+/**
+ * Programmatically click a React-controlled button.
+ *
+ * Accepts either a button label (exact match on `innerText`)
+ * or a direct HTMLElement reference.
+ *
+ * @export
+ * @param {string|HTMLElement} target - Button text or element
+ */
 export function reactClickButton(target) {
   const doc = eval("document");
 
@@ -170,11 +219,15 @@ export function reactClickButton(target) {
 }
 
 /**
- * Go to any Sidebar Menu Selection
- * terminal, script editor, active scripts, create program, stats, factions, augmentations, hacknet, city, travel, stock market
+ * Navigate to a sidebar menu entry.
+ *
+ * Supported entries include:
+ * terminal, script editor, active scripts, create program, stats,
+ * factions, augmentations, hacknet, city, travel, stock market
+ *
+ * Automatically exits focus mode if active.
  *
  * @export
- * @async
  * @param {"terminal" | "script editor" | "active scripts" | "create program" | "stats" | "factions" | "augmentations" | "hacknet" | "city" | "travel" | "stock market"} where
  */
 export function goSidebar(where) {
@@ -191,13 +244,14 @@ export function goSidebar(where) {
 }
 
 /**
- * Navigate in City via case insensitive name search lookup
- * roth => rothman university
- * joe => joe`s guns
+ * Navigate to a city location using a fuzzy, case-insensitive lookup.
+ *
+ * Examples:
+ * - "roth" → Rothman University
+ * - "joe"  → Joe's Guns
  *
  * @export
- * @async
- * @param {string} w
+ * @param {string} w - Partial city location name
  */
 export function goCity(w) {
   const doc = eval("document");
@@ -218,9 +272,12 @@ export function goCity(w) {
 }
 
 /**
- * Description placeholder
+ * Retrieve all available city locations.
+ *
+ * Automatically navigates to the city view before reading markers.
  *
  * @export
+ * @returns {string[]} List of city location names
  */
 export function getCityLocations() {
   const doc = eval("document");
@@ -230,12 +287,13 @@ export function getCityLocations() {
   );
 }
 
-// TODO check if there is something to confirm (!)
-
 /**
- * Accept confirmation Dialog
+ * Accept the currently visible confirmation dialog.
  *
+ * Assumes the last rendered dialog is the active one and
+ * clicks the confirm/accept button.
  *
+ * @export
  */
 export function acceptConfirm() {
   const doc = eval("document");
@@ -245,9 +303,14 @@ export function acceptConfirm() {
 }
 
 /**
- * Travel to a certain City:
+ * Travel to a specific city.
+ *
+ * Supported destinations:
  * Volharen, Sector-12, New Tokyo, Aevum, Ishima
  *
+ * Automatically confirms the travel dialog.
+ *
+ * @export
  * @param {"Volharen" | "Sector-12" | "New Tokyo" | "Aevum" | "Ishima"} where
  */
 export function goTravel(where) {
@@ -264,11 +327,20 @@ export function goTravel(where) {
 }
 
 /**
- * Go to a Locationmarker on a Citymap
- * T(echnician) G(ym) U(niversity) S(lums) $(Stock)
- * For specific Locations use "goCity"
+ * Navigate to a location marker on the city map.
  *
- * @param where {"T" | "G" | "U" | "S" | "$" | "H"}
+ * Shortcuts:
+ * - T → Technician
+ * - G → Gym
+ * - U → University
+ * - S → Slums
+ * - $ → Stock Market
+ * - H → Hospital
+ *
+ * For specific named locations, use {@link goCity}.
+ *
+ * @export
+ * @param {"T" | "G" | "U" | "S" | "$" | "H"} where
  */
 export function goLocation(where) {
   const doc = eval("document");
@@ -288,14 +360,15 @@ export function goLocation(where) {
 }
 
 /**
- * Find Element via Innertext search
+ * Find an element by CSS selector and innerText match.
+ *
+ * Optionally clicks the element automatically.
  *
  * @export
- * @async
- * @param {string} html class selector
- * @param {string} innerText to search
- * @param {boolean} When found autoclick or return
- * @returns {Object} HTML Element when click is false
+ * @param {string} htmlClass - CSS selector
+ * @param {string} textInc - Case-insensitive innerText fragment
+ * @param {boolean} [doClick=true] - Click when found
+ * @returns {HTMLElement|undefined} Found element if `doClick` is false
  */
 export async function findElement(htmlClass, textInc, doClick = true) {
   const doc = eval("document");
@@ -312,10 +385,13 @@ export async function findElement(htmlClass, textInc, doClick = true) {
 }
 
 /**
- * Execute in Terminal
+ * Execute a command in the Bitburner terminal.
+ *
+ * Navigates to the terminal, injects the command, and
+ * simulates an Enter key press.
  *
  * @export
- * @param {string} command
+ * @param {string} command - Terminal command to execute
  */
 export function execTerm(command) {
   goSidebar("terminal");
@@ -337,6 +413,14 @@ export function execTerm(command) {
   }
 }
 
+/**
+ * Trigger a save action in the script editor.
+ *
+ * Locates the save icon and clicks its parent button
+ * via React's internal event handling.
+ *
+ * @export
+ */
 export function save() {
   const saveBtn = [...document.querySelectorAll('.react-draggable svg')].filter(e => e.getAttribute("data-testid") === "SaveIcon")[0];
   reactClickButton(saveBtn.parentElement);

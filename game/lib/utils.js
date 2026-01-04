@@ -1,9 +1,19 @@
 /**
- * Helper for Tailsetup - best use with windev command
+ * Helper utility for Tail window setup.
+ *
+ * Intended to be used during development (e.g. together with a `windev`
+ * or similar workflow). Opens the Tail window and optionally applies
+ * title, size, and screen position.
  *
  * @export
- * @param {*} ns
- * @param {{ w: number; h: number; x: number; y: number; }} [opt={}}]
+ * @param {import("..").NS} ns - Bitburner Netscript API
+ * @param {{
+ *   w?: number;
+ *   h?: number;
+ *   x?: number;
+ *   y?: number;
+ *   title?: string;
+ * }} [opt={}] - Optional Tail configuration
  */
 export function setupTail(ns, opt = {}) {
   if (!opt) return;
@@ -21,21 +31,40 @@ export function setupTail(ns, opt = {}) {
   }
 }
 
+/**
+ * Development helper to pretty-print objects.
+ *
+ * Outputs the given payload to:
+ * - terminal (`tprint`)
+ * - script log (`print`)
+ * - browser console
+ *
+ * @export
+ * @param {import("..").NS} ns - Bitburner Netscript API
+ * @param {any} p - Data to inspect
+ */
 export function dev(ns, p) {
   const x = JSON.stringify(p, null, 2);
   ns.tprint(`/*\n${x}\n*/`);
   ns.print(`/*\n${x}\n*/`);
   console.log(x);
 }
+
 /**
- * Returns a progressbar and info for RAM usage
+ * Generate a textual RAM usage bar for a server.
+ *
+ * Returns a colored progress bar along with human-readable RAM usage
+ * and percentage values.
  *
  * @export
- * @param {import("..").NS } ns
- * @param {string} [host="home"]
- * @returns {{ progress: string; info: string; percent: string; }}
+ * @param {import("..").NS} ns - Bitburner Netscript API
+ * @param {string} [host="home"] - Target server hostname
+ * @returns {{
+ *   progress: string;
+ *   info: string;
+ *   percent: string;
+ * }} RAM usage display information
  */
-
 export function getRamBar(ns, host = "home") {
   const all = ns.getServerMaxRam(host);
   const used = ns.getServerUsedRam(host);
@@ -62,6 +91,11 @@ export function getRamBar(ns, host = "home") {
   };
 }
 
+/**
+ * ANSI color escape codes for terminal output.
+ *
+ * @readonly
+ */
 export const C = {
   black: "\u001b[30m",
   red: "\u001b[31m",
@@ -83,12 +117,14 @@ export const C = {
 };
 
 /**
- * Multi word replacer
+ * Replace multiple words in a string using a lookup map.
  *
- * @param {string} str -
- * @param {{search: replace}} mapObj -
+ * All keys in the map are matched case-insensitively and replaced
+ * with their corresponding values.
  *
- * @returns {string} replaced string
+ * @param {string} str - Input string
+ * @param {Object.<string, string>} mapObj - Search/replace map
+ * @returns {string} The transformed string
  */
 export function replaceAll(str, mapObj) {
   var re = new RegExp(Object.keys(mapObj).join("|"), "gi");
@@ -99,12 +135,15 @@ export function replaceAll(str, mapObj) {
 }
 
 /**
- * Creates a Line
+ * Create a horizontal separator line.
  *
- * @param {number} [ln=90]
- * @param {"black" | "red" | "green" | "yellow" | "blue" | "magenta" | "cyan" | "white" | "brightBlack" | "brightRed" | "brightGreen" | "brightYellow" | "brightBlue" | "brightMagenta" | "brightCyan" | "brightWhite" | "reset"} [color=null]
- * @param {string} [what="="]
- * @returns {string}
+ * Optionally applies ANSI color codes and allows customization
+ * of line length and fill character.
+ *
+ * @param {number} [ln=90] - Line length
+ * @param {keyof typeof C | null} [color=null] - Optional color
+ * @param {string} [what="="] - Character to repeat
+ * @returns {string} Generated line
  */
 export const line = (ln = 90, color = null, what = "=") => {
   const line = new Array(ln).fill(what).join("");
@@ -114,7 +153,15 @@ export const line = (ln = 90, color = null, what = "=") => {
   return line;
 };
 
-/** @param {import("..").NS } ns */
+/**
+ * Disable Netscript log entries.
+ *
+ * Always disables `disableLog` itself and any additional
+ * log functions provided.
+ *
+ * @param {import("..").NS} ns - Bitburner Netscript API
+ * @param {string[]} array - List of log function names to disable
+ */
 export function disableLogs(ns, array) {
   ["disableLog", ...array].forEach((str) => {
     ns.disableLog(str);
@@ -122,13 +169,17 @@ export function disableLogs(ns, array) {
 }
 
 /**
- * Description of method.
+ * Initialize a simple global state store backed by a JSON file.
  *
- * @param {import("..").NS } ns
- * @param {string} key -
- * @param {any} value -
+ * Provides getter and setter functions to persist values
+ * across script executions.
  *
- * @returns {any} - This function does not return a value but performs assertions on the input data.
+ * @export
+ * @param {import("..").NS} ns - Bitburner Netscript API
+ * @returns {[
+ *   (key?: string) => any,
+ *   (key: string, value?: any) => any
+ * ]} Tuple of `[getState, setState]`
  */
 export function initState(ns) {
   const F = "/var/global.json";
@@ -179,7 +230,16 @@ export function initState(ns) {
   return [getState, setState];
 }
 
-/** @param {import("..").NS } ns */
+/**
+ * Calculate the maximum number of threads that can be run.
+ *
+ * Considers available RAM on the host and RAM cost of the script.
+ *
+ * @param {import("..").NS} ns - Bitburner Netscript API
+ * @param {string} host - Hostname
+ * @param {string} script - Script filename
+ * @returns {number} Number of runnable threads (minimum 1)
+ */
 export function getThreads(ns, host, script) {
   disableLogs(ns, ["getServerMaxRam", "getServerUsedRam"]);
   const aRam = ns.getServerMaxRam(host) - ns.getServerUsedRam(host);
@@ -187,12 +247,32 @@ export function getThreads(ns, host, script) {
   return Math.floor(aRam / sRam) || 1;
 }
 
+/**
+ * Pad a string to a fixed width.
+ *
+ * Allows optional prefixing and left/right alignment.
+ *
+ * @param {string|number} str - Value to pad
+ * @param {number} [pad=7] - Total width
+ * @param {string} [prefix=""] - Optional prefix
+ * @param {boolean} [left=true] - Left-align when true, right-align otherwise
+ * @returns {string} Padded string
+ */
 export const pad = (str, pad = 7, prefix = "", left = true) => {
   const len = pad - `${str}`.length + prefix.length;
   const strPad = len > 0 ? new Array(len).fill(" ").join("") : "";
   return left ? `${prefix}${str}${strPad}` : `${strPad}${prefix}${str}`;
 };
 
+/**
+ * Convert a formatted number string into a raw integer.
+ *
+ * Supports common Bitburner-style suffixes:
+ * k, m, b, t, q
+ *
+ * @param {string|number} value - Formatted value (e.g. "1.5b")
+ * @returns {number} Parsed integer value, or NaN if invalid
+ */
 export function fromFormat(value) {
   const multipliers = {
     "": 1,
@@ -214,6 +294,14 @@ export function fromFormat(value) {
   return Math.floor(amount * multipliers[suffix]);
 }
 
+/**
+ * Find the nearest lower power-of-two value.
+ *
+ * Decrements the input until it is a valid power of two.
+ *
+ * @param {number} x - Input number
+ * @returns {number} Nearest lower power of two
+ */
 export function getPow2(x) {
   do {
     x--;
@@ -222,13 +310,16 @@ export function getPow2(x) {
 }
 
 /**
- * Argument Parser
+ * Simple argument parser for Netscript scripts.
  *
- * @param {import(".").NS } ns -
- * @param {Object} preDef  default values, use undefined for required
- * @param {Function} helpCallback - Callback Function for Help Texts
+ * Supports `key=value` pairs, automatic type coercion,
+ * required parameters, and a built-in help mode.
  *
- * @returns {any} - This function does not return a value but performs assertions on the input data.
+ * @export
+ * @param {import(".").NS} ns - Bitburner Netscript API
+ * @param {Object} preDef - Default values (use `undefined` for required args)
+ * @param {Function} helpCallback - Optional help output callback
+ * @returns {Object} Parsed arguments
  */
 export function getArgs(ns, preDef, helpCallback) {
   if (ns.args[0] === "help" || ns.args[0] === "-h") {
@@ -238,6 +329,7 @@ export function getArgs(ns, preDef, helpCallback) {
     }
     ns.exit();
   }
+
   const input = ns.args;
   const args = Object.fromEntries(
     input.map((arg) => {
@@ -248,26 +340,16 @@ export function getArgs(ns, preDef, helpCallback) {
         ns.exit();
       }
 
-      if (/false/.test(a[1])) {
-        return [a[0], false];
-      }
-
-      if (/true/.test(a[1])) {
-        return [a[0], true];
-      }
-
-      if (/null/.test(a[1])) {
-        return [a[0], null];
-      }
-
-      if (!isNaN(a[1])) {
-        return [a[0], parseFloat(a[1])];
-      }
+      if (/false/.test(a[1])) return [a[0], false];
+      if (/true/.test(a[1])) return [a[0], true];
+      if (/null/.test(a[1])) return [a[0], null];
+      if (!isNaN(a[1])) return [a[0], parseFloat(a[1])];
 
       a[1] = a[1].replaceAll("+", " ");
       return a;
     })
   );
+
   const ret = Object.assign({}, preDef, args);
 
   Object.keys(ret).forEach((a) => {
