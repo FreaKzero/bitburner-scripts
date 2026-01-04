@@ -16,10 +16,10 @@ export async function main(ns) {
   ns.disableLog("ALL");
   setupTail(ns, {
     title: `🌐 Network Monitor`,
-    w: 850,
-    h: 800,
+    w: 875,
+    h: 450,
     x: 70,
-    y: 13,
+    y: 12,
   });
 
   const [state] = initState(ns);
@@ -99,11 +99,20 @@ export async function main(ns) {
         col: col,
         symbol: stock.sym,
         hacktime: hacktime,
+        hacktimeRaw: avg,
       };
     });
 
     if (!ducks) {
       list = list.filter((a) => a.exec !== "🦆");
+    }
+
+    if (sort === "time") {
+      list = list.sort((a, b) =>
+        dir.toLowerCase() === "asc"
+          ? a.hacktimeRaw - b.hacktimeRaw
+          : b.hacktimeRaw - a.hacktimeRaw
+      );
     }
 
     if (sort === "level") {
@@ -152,9 +161,14 @@ export async function main(ns) {
   }
 }
 
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function autocomplete(data, args) {
-  const params = ['sort=money','ducks=false','dir=desc','watch=false'];
-  return [...params]
+  const params = [
+    "sort=money",
+    "sort=time",
+    "ducks=false",
+    "dir=desc",
+    "watch=false",
+  ];
+  return [...params];
 }

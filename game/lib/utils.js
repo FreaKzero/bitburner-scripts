@@ -1,3 +1,51 @@
+
+export const decorateLocationLine = (txt) => {
+  if (txt.toLowerCase().includes('gym')) {
+    return  `  💪🏼 ${txt}`
+  }
+
+  if (txt.toLowerCase().includes('enterprise') || txt.toLowerCase().includes('technologies') || txt.toLowerCase().includes('tek') || txt.toLowerCase().includes('omega software')) {
+    return  `  🛒 ${txt}`
+  }
+
+  if (txt.toLowerCase().includes('slums')) {
+    return  `  🔪 ${txt}`
+  }
+
+   if (txt.toLowerCase().includes('hospital')) {
+    return  `  💊 ${txt}`
+  }
+
+  if (txt.toLowerCase().includes('university') || txt.toLowerCase().includes('institute')) {
+    return  `  🎓 ${txt}`
+  }
+
+  if (txt.toLowerCase().includes('stock')) {
+    return  `  📈 ${txt}`
+  }
+  
+   if (txt.toLowerCase().includes('travel')) {
+    return  `  ✈️ ${txt}`
+  }
+
+    if (txt.toLowerCase().includes('arcade')) {
+    return  `  🕹️ ${txt}`
+  }
+
+    if (txt.toLowerCase().includes('noodle')) {
+    return  `  🍜 ${txt}`
+  }
+
+    if (txt.toLowerCase().includes('casino')) {
+    return  `  🎡 ${txt}`
+  }
+
+    if (txt.includes('0x6C1')) {
+    return  `  👾 Glitch (${txt} = 1729)`
+  }
+  return  `  🏴 ${txt}`
+};
+
 /**
  * Helper utility for Tail window setup.
  *
@@ -72,7 +120,7 @@ export function getRamBar(ns, host = "home") {
   const per = Math.ceil((100 * used) / all);
   const ui = Math.ceil(per / 5) * 5;
 
-  const col = per < 50 ? C.green : per < 75 ? C.yellow : C.red;
+  const col = per < 50 ? C.green : per < 80 ? C.yellow : C.red;
 
   let bars = `${col}`;
 

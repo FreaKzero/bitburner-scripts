@@ -48,6 +48,8 @@ export async function main(ns) {
         await ns.sleep(1500);
         ns.print(`${C.red} 💣 Deploy and Attack foodnstuff`);
         execTerm(`deploy dist/auto.js foodnstuff`);
+        
+        // TODO Accept Faction Dialogs
       }
 
       await ns.sleep(3 * 10000);

@@ -4,7 +4,7 @@ export default {
   prefixHacknet: "hacknet-node-",
   boot: 
   [
-    { title: "Inject Styles", script: "sys/inject.js", args:[], order: 0},
+    { title: "Inject Styles", script: "sys/inject.js", args:[], order: 1},
     { title: "Register Aliases", script: "etc/alias.js", args: [], order: 1 },
     { title: "Monitor", script: "bin/psx.jsx", args: [], order: 3 },
     { title: "Contracts Daemon", script: "daemon/contracts.js", args: [], order: 4 },
@@ -14,7 +14,7 @@ export default {
     { title: "Backdoor Daemon", script: "daemon/backdoor.js", args:[], order: 8},
     { title: "Network Monitor", script: "bin/lsnet.js", args:[], order: 9},
     { title: "Threaded Attack", script: "bin/thread.js", args: ['dist/auto.js', 'n00dles', '80'], order: 98}, 
-    { title: "Building Cache", script: "sys/buildcache.js", args: [], order: 99 },   
+    { title: "Building Cache", script: "sys/buildcache.js", args: [], order: 0 },   
   ].sort((a, b) => a.order - b.order),
   dist: [
     "dist/auto.js",
