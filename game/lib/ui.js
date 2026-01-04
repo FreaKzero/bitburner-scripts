@@ -6,8 +6,7 @@ export function $(selector) {
 
 export function $$(selector) {
    const doc = eval("document");
-   const elements = [...doc.querySelector(selector)];
-   return elements;
+   return doc.querySelector(selector);
 }
 
 /**
