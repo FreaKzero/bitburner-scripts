@@ -18,7 +18,7 @@ export async function main(ns) {
   ) {
     setState("attack", host);
   } else {
-    setState(ns, "attack", "");
+    setState("attack", "");
   }
 
   for (const serv of servers) {

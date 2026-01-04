@@ -23,7 +23,7 @@ function Processes({ list }) {
               &times;
             </button>{" "}
             <span>{a.name}</span>
-            {"\t     "}
+            {"\t  "}
             <span>{a.threads}</span>
             <span>{a.ram}</span>
             {"  "}
@@ -66,7 +66,7 @@ export async function main(ns) {
         const r = ns.getScriptRam(a.filename);
         return {
           name: pad(a.filename, 20),
-          threads: pad(a.threads, 6, "", false),
+          threads: pad(ns.formatNumber(a.threads), 9, "", false),
           ram: pad(ns.formatRam(r * a.threads), 10, "", false),
           pid: pad(a.pid, 3, "", false),
         };

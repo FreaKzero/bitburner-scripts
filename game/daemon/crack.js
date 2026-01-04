@@ -27,13 +27,6 @@ export async function main(ns) {
 
     const list = DARKWEB_PROGRAMS.filter((a) => !ns.fileExists(a.program));
 
-    if (list.length < 1) {
-      ns.print(
-        `${C.yellow}        🔥 All cracks bought, used, deployed 🔥\n\n\n\n`
-      );
-      ns.exit();
-    }
-
     if (!ns.hasTorRouter() && ns.getPlayer().money > fromFormat("200.000k")) {
       goLocation("T");
       findElement(".MuiButtonBase-root", "TOR router", true);
@@ -60,6 +53,13 @@ export async function main(ns) {
       await ns.sleep(3 * 10000);
     }
 
+    if (list.length < 1) {
+      ns.print(
+        `${C.yellow}        🔥 All cracks bought, used, deployed 🔥\n\n\n\n`
+      );
+      ns.exit();
+    }
+    
     ns.clearLog();
     ns.print(`${C.magenta}           ⏳ Waiting for Money ⏳\n\n\n\n`);
     await ns.sleep(20 * 10000);

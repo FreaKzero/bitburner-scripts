@@ -2,7 +2,7 @@ import {deepscan} from '../lib/scan';
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
-    const list = deepscan(ns, 'home');
+    const list = deepscan(ns, 'home').filter(a => !['home', 'darkweb'].includes(a));
     const SPECIAL = ["CSEC", "avmnite-02h", "I.I.I.I", "run4theh111z", "The-Cave", "powerhouse-fitness"];
      
     const HOSTS = `export const HOSTS = ${JSON.stringify(list)}`;
@@ -21,7 +21,5 @@ export async function main(ns) {
 
     const content = `${HOSTS};\n\n${SPECIAL_HOSTS};`;
     ns.write('../var/cache.js', content, 'w');
-
 }
- 
  

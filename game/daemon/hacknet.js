@@ -8,7 +8,6 @@ export async function main(ns) {
   const startMoney = ns.getPlayer().money;
   const ln = `${line(51, "black")}${C.reset}\n`;
   const maxServer = ns.hacknet.maxNumNodes();
-  const numServer = ns.hacknet.numNodes();
   const MAX = {
     ram: 64,
     cores: 16,
@@ -31,7 +30,7 @@ export async function main(ns) {
   const getHacknetCollection = () => {
     const collection = [];
 
-    for (var i = 0; i < numServer; i++) {
+    for (var i = 0; i < ns.hacknet.numNodes(); i++) {
       const { ram, level, cores } = ns.hacknet.getNodeStats(i);
       collection.push({
         ram,
@@ -137,7 +136,7 @@ export async function main(ns) {
 
     ns.print(O);
 
-    if (numServer >= maxServer) {
+    if (ns.hacknet.numNodes() >= maxServer) {
       ns.clearLog();
       ns.print(
         `   🔥 ${C.magenta}Maximum of Purchaseable Nodes reached${C.reset} 🔥\n\n\n\n\n\n\n\n\n\n`

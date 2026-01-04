@@ -182,7 +182,7 @@ export function reactClickButton(target) {
   const btn =
     typeof target === "string"
       ? Array.from(doc.querySelectorAll("button")).find(
-          b => b.innerText.trim() === target
+          b => b.innerText.toLowerCase().trim() === target.toLowerCase()
         )
       : target instanceof HTMLElement
         ? target

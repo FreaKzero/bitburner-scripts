@@ -1,7 +1,6 @@
-import { disableLogs } from "./utils";
 /** @param {import("../").NS } ns */
 export function deepscan(ns, rootHost = "home") {
-  disableLogs(ns, ['sleep', 'scan']);
+  ns.disableLog('ALL');
   let pendingScan = [rootHost];
   const list = new Set(pendingScan);
 

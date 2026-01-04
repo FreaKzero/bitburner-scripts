@@ -7,7 +7,7 @@ export async function main(ns) {
   const script = ns.args[0] || null;
   const args = ns.args[1] || "";
   const div = ns.args[2] || 90
- 
+  
   const allThreads = getThreads(ns, "home", script);
   const threads = Math.floor(allThreads * (div / 100));
   const uThreads = div === 100 ? Math.floor(allThreads) : threads || 1;

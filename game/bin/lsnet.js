@@ -29,7 +29,7 @@ export async function main(ns) {
       sort: "level",
       ducks: true,
       dir: "asc",
-      watch: false,
+      watch: true,
     },
     () => {
       ns.tprintRaw("Sort Options: level | money");
@@ -150,4 +150,11 @@ export async function main(ns) {
     ns.clearLog();
     render();
   }
+}
+
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars 
+export function autocomplete(data, args) {
+  const params = ['sort=money','ducks=false','dir=desc','watch=false'];
+  return [...params]
 }

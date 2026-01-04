@@ -44,7 +44,7 @@ export async function main(ns) {
 
   ns.tprint(LOGO);
 
-  if (ns.getPlayer().skills.hacking < 5) {
+  if (ns.getPlayer().skills.hacking < 15) {
     goCity("foodnstuff");
     reactClickButton("Apply to be a Part-time Employee");
     await ns.sleep(500);

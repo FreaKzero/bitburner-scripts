@@ -2,16 +2,17 @@ import { line } from "../lib/utils";
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
+    const namehook = '↖ DEVELOPMENT';
     ns.ui.openTail();
-    ns.ui.setTailTitle('DEVELOPMENT');
-    
+    ns.ui.setTailTitle(namehook);
+     ns.ui.resizeTail(500, 200);
     ns.disableLog('ALL');
     while(true) {
         ns.clearLog();
         const doc = eval('document');
         const dragWindows = [...doc.querySelectorAll('.drag > h6')];
         if (dragWindows) {
-            const match = dragWindows.filter((w) => w.textContent.includes('DEVELOPMENT'));
+            const match = dragWindows.filter((w) => w.textContent.includes(namehook));
            
             if (match[0]) {
                 const e = match[0].parentNode.parentNode.getClientRects()[0];
