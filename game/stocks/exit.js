@@ -1,6 +1,7 @@
+import { initState } from "../lib/utils";
+
 /** @param {import("..").NS } ns */
 export async function main(ns) {
-  ns.ps("home")
-  .filter(i => i.filename.includes('stocks/'))
-  .forEach(i => ns.kill(i.pid))
+  const [exit, setExit] = initState(ns, "StockExit");
+  setExit(true);
 }

@@ -22,22 +22,21 @@ export async function main(ns) {
     y: 12,
   });
 
-  const [state] = initState(ns);
+  const [attacked] = initState(ns, 'attack');
   const { watch, sort, ducks, dir } = getArgs(
     ns,
     {
       sort: "level",
       ducks: true,
       dir: "asc",
-      watch: true,
+      watch: false,
     },
     () => {
       ns.tprintRaw("Sort Options: level | money");
     }
   );
 
-  const render = () => {
-    const attacked = state("attack");
+  const render = () => {;
     let output = "\n";
     let list = HOSTS.filter((a) => !a.includes(cfg.prefixServer));
     list = list.map((item) => {
@@ -168,7 +167,7 @@ export function autocomplete(data, args) {
     "sort=time",
     "ducks=false",
     "dir=desc",
-    "watch=false",
+    "watch=true",
   ];
   return [...params];
 }

@@ -61,7 +61,7 @@ export async function main(ns) {
     return money + BUDGET - startMoney;
   };
 
-  const [state] = initState(ns);
+  const [attack] = initState(ns, 'attack');
 
   while (true) {
     let hadFocus = inView("focus");
@@ -88,7 +88,7 @@ export async function main(ns) {
           SERVER_NEW_RAM
         );
         if (autodeploy) {
-          execTerm(`deploy dist/auto.js ${state("attack")} `);
+          execTerm(`deploy dist/auto.js ${attack} `);
           if (hadFocus) {
             findElement("button", "Focus", true);
           }

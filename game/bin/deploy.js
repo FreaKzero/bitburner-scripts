@@ -11,14 +11,15 @@ export async function main(ns) {
 
   const servers = deepscan(ns);
   
-  const [state, setState] = initState(ns);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [attack, setAttack] = initState(ns, 'attack');
   if (
     host &&
     ["auto.js", "hack.js", "weak.js", "grow.js"].some((s) => script.includes(s))
   ) {
-    setState("attack", host);
+    setAttack(host);
   } else {
-    setState("attack", "");
+    setAttack("");
   }
 
   for (const serv of servers) {
@@ -35,6 +36,11 @@ export async function main(ns) {
   }
 
   if (home) {
+    
+    ns.ps('home').filter(a => a.filename.includes(script)).forEach(a => {
+      ns.kill(a.pid)
+    });
+    
     const aRam = ns.getServerMaxRam("home") - ns.getServerUsedRam("home");
     const sRam = ns.getScriptRam(script);
     const threads = Math.floor(aRam / sRam);

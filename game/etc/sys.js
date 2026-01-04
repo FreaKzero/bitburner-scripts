@@ -6,7 +6,7 @@ export default {
   [
     { title: "Inject Styles", script: "sys/inject.js", args:[], order: 1},
     { title: "Register Aliases", script: "etc/alias.js", args: [], order: 1 },
-    { title: "Monitor", script: "bin/psx.jsx", args: [], order: 3 },
+    { title: "Monitor", script: "bin/psx.jsx", args: ["sort=time"], order: 3 },
     { title: "Contracts Daemon", script: "daemon/contracts.js", args: [], order: 4 },
     { title: "Cracknet", script: "bin/cracknet.js", args: [], order: 5 },
     { title: "Deploment", script: "bin/deploy.js", args: ["dist/auto.js", "n00dles"], order: 6},

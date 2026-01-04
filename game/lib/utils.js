@@ -215,7 +215,6 @@ export function disableLogs(ns, array) {
     ns.disableLog(str);
   });
 }
-
 /**
  * Initialize a simple global state store backed by a JSON file.
  *
@@ -224,15 +223,19 @@ export function disableLogs(ns, array) {
  *
  * @export
  * @param {import("..").NS} ns - Bitburner Netscript API
+ * @param {string} key - Key to initialize with
  * @returns {[
- *   (key?: string) => any,
+ *   any,
  *   (key: string, value?: any) => any
- * ]} Tuple of `[getState, setState]`
+ * ]} Tuple of `[stateValue, setState]`
  */
-export function initState(ns) {
+export function initState(ns, key) {
   const F = "/var/global.json";
+  if (!key) {
+    return;
+  }
 
-  const setState = (key, value = null) => {
+  const setState = (value = null) => {
     const x = ns.read(F);
     let j;
 
@@ -264,10 +267,10 @@ export function initState(ns) {
         if (full[key]) {
           return full[key];
         } else {
-          return "";
+          return null;
         }
       } else {
-        return JSON.parse(json);
+       return null;
       }
     } catch (_e) {
       console.log(_e);
@@ -275,7 +278,7 @@ export function initState(ns) {
     }
   };
 
-  return [getState, setState];
+  return [getState(key), setState];
 }
 
 /**

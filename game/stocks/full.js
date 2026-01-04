@@ -1,20 +1,22 @@
 import { getStockCollection } from "../lib/stonks";
-import { fromFormat, line, C, pad, getArgs, setupTail } from "../lib/utils";
+import {
+  fromFormat,
+  line,
+  C,
+  pad,
+  getArgs,
+  setupTail,
+  initState,
+} from "../lib/utils";
 import cfg from "../etc/stocks";
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
   ns.disableLog("ALL");
-  const { buy, pot, budget, ignore } = getArgs(ns, {
-    buy: true,
+  const { pot, budget, ignore } = getArgs(ns, {
     pot: 0.15,
     budget: ns.getPlayer().money,
     ignore: null,
-  });
-
-  ns.atExit(() => {
-    ns.exec("stocks/exit.js", "home");
-    ns.ui.closeTail();
   });
 
   const startMoney = ns.getPlayer().money;
@@ -39,9 +41,16 @@ export async function main(ns) {
     return money + BUDGET - startMoney;
   };
 
+  ns.atExit(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [_exit, setExit] = initState(ns, "StockExit");
+    setExit(false);
+  });
+
   while (true) {
     ns.clearLog();
-
+    const [exit, setExit] = initState(ns, "StockExit");
+    
     let O = ``;
 
     O += ln;
@@ -71,7 +80,7 @@ export async function main(ns) {
         const x = s.haveStocks ? "💸" : ignored ? "🚫" : "⌛";
 
         if (
-          buy &&
+          !exit && 
           !s.haveStocks &&
           haveMoney &&
           s.ableShares > cfg.minShares &&
@@ -93,12 +102,12 @@ export async function main(ns) {
         false
       );
 
-      if (buy) {
+      if (exit) {
+        O += `${C.red}🚨 EXIT CALLED 🚨 \n`;
+      } else {
         O += `${C.white}Current Budget:${C.reset}${C.yellow} $${ns.formatNumber(
           getBudget()
         )}${C.reset} ${C.white}${C.reset}\t\t${p}\n`;
-      } else {
-        O += `${C.yellow}Watchmode (No Autobuy)\n`;
       }
 
       ns.print(O);
@@ -114,6 +123,6 @@ export async function main(ns) {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function autocomplete(data, args) {
-  const params = ["buy=", "pot=", "budget=", "ignore="];
+  const params = ["pot=", "budget=", "ignore="];
   return [...params];
 }

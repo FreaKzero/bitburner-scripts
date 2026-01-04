@@ -1,9 +1,10 @@
 /** @param {import("..").NS } ns */
 export async function main(ns) {
+  const doc = eval("document");
   const styles = ns.read('./styles.js');
-  const style = document.createElement("style")
+  const style = doc.createElement("style")
   style.textContent = styles;
-  document.head.appendChild(style)
+  doc.head.appendChild(style)
 }
 
 

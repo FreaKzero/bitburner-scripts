@@ -47,16 +47,14 @@ export async function main(ns) {
     y: 568,
   });
 
-  const [state] = initState(ns);
-
   ns.atExit(() => {
     ns.ui.closeTail();
   });
 
   function render() {
+    const [attacked] = initState(ns, 'attack');
     ns.clearLog();
     const host = "home";
-    const attacked = state("attack");
     const ln = line(51, "black");
     const processes = ns
       .ps(host)

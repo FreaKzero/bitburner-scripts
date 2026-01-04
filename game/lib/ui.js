@@ -46,7 +46,8 @@ export function inView(text) {
   if (hasHeadline) {
     return true;
   } else {
-    const active = document
+    const doc = eval("document");
+    const active = doc
       .querySelector('[class*="listitem-active"]')
       ?.innerText.toLowerCase()
       ?.includes(compare);
@@ -422,6 +423,6 @@ export function execTerm(command) {
  * @export
  */
 export function save() {
-  const saveBtn = [...document.querySelectorAll('.react-draggable svg')].filter(e => e.getAttribute("data-testid") === "SaveIcon")[0];
+  const saveBtn = [...doc.querySelectorAll('.react-draggable svg')].filter(e => e.getAttribute("data-testid") === "SaveIcon")[0];
   reactClickButton(saveBtn.parentElement);
 }

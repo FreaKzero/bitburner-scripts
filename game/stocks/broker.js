@@ -1,6 +1,7 @@
 import Store from "../lib/store";
 import { getStockInfo } from "../lib/stonks";
-import cfg from '../etc/stocks';
+import cfg from "../etc/stocks";
+import { initState } from "../lib/utils";
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
@@ -52,17 +53,21 @@ export async function main(ns) {
       })
       .persist();
 
-      ns.stock.sellStock(sym, curStock.longShares);
+    ns.stock.sellStock(sym, curStock.longShares);
   });
 
   while (running) {
     const st = getStockInfo(ns, sym);
+    const [exit] = initState(ns, "StockExit");
+  
+    if (exit && st.profit > 0) {
+      running = false;
+    }
 
     if (st.forecast < cfg.forecastTreshold && st.potential < 0.14) {
       running = false;
     }
-    
+
     await ns.stock.nextUpdate();
   }
 }
-
