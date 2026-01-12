@@ -8,14 +8,14 @@ export async function main(ns) {
 
   if (!i) {
     const current = TRAVELMAP.find((a) => a.city === PLAYER.city);
-    ns.tprintRaw(`Locations of ${current.city}`);
-    current.locations.forEach((e) => {
-      ns.tprintRaw(decorateLocationLine(e));
-    });
+    if (current) {
+      ns.tprintRaw(`Locations of ${current.city}`);
+      current.locations.forEach((e) => {
+        ns.tprintRaw(decorateLocationLine(e));
+      });
 
-    ns.tprintRaw(`
-Locations:
-
+      ns.tprintRaw(`
+Fasttravel Identifiers:
   T  🛒 Technician
   G  💪🏼 Gym
   U  🎓 University
@@ -23,7 +23,8 @@ Locations:
   $  📈 Stock Market 
   H  💊 Hospital
       `);
-    return;
+      return;
+    }
   }
 
   if (i.length === 1) {
@@ -50,11 +51,12 @@ Locations:
   if (found) {
     if (PLAYER.city !== found.city) {
       if (PLAYER.money < fromFormat("200.000k")) {
-        ns.tprintRaw('You dont have enough money to travel there');
+        ns.tprintRaw("You dont have enough money to travel there");
         return;
       }
       goTravel(found.city);
     }
+
     goCity(i);
   }
 }

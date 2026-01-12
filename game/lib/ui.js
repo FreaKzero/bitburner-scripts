@@ -70,6 +70,12 @@ export function inView(text) {
     a.innerText.toLowerCase().includes(compare)
   );
 
+  if (text === "go") {
+     return $("h6").find(
+      (a) => a?.innerText?.includes("Subnet owner")
+    );
+  }
+
   if (text === "focus") {
     return $(".MuiPaper-root > .MuiTypography-h6").find(
       (a) => a?.innerText?.includes("You are currently")
@@ -208,11 +214,11 @@ export function reactFocus(el, value) {
  * @param {string|HTMLElement} target - Button text or element
  */
 export function reactClickButton(target) {
-
+  // TODO Testing includes Button Label
   const btn =
     typeof target === "string"
       ? $('button').find(
-          b => b.innerText.toLowerCase().trim() === target.toLowerCase()
+          b => b.innerText.toLowerCase().trim().includes(target.toLowerCase())
         )
       : target instanceof HTMLElement
         ? target
@@ -291,7 +297,7 @@ export function goCity(w) {
     .findIndex((a) => a > -1);
 
   if (found) {
-    const node = $('span[aria-label="${locs[found]}"]')
+    const node = $$(`span[aria-label="${locs[found]}"]`)
     if (node) {
       node.click();
     }
@@ -341,7 +347,7 @@ export function acceptConfirm() {
  */
 export function goTravel(where) {
   goSidebar("travel");
-  const find = $('travel').find((a) => a.innerText.trim() === where[0]);
+  const find = $('[class*="travel"]').find((a) => a.innerText.trim() === where[0]);
 
   if (find) {
     find.click();
@@ -368,10 +374,9 @@ export function goTravel(where) {
 export function goLocation(where) {
   goSidebar("city");
 
-  const find = $('class*="location"').find(
+  const find = $('[class*="location"]').find(
     (a) =>
-      !a.getAttribute("aria-label").toLowerCase().includes("travel") &&
-      !a.getAttribute("aria-label").toLowerCase().includes("slums") &&
+      !a.getAttribute("aria-label").toLowerCase().includes("travel") && 
       a.innerText.trim().toLowerCase() === where.toLowerCase()
   );
 

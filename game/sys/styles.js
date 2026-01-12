@@ -13,8 +13,7 @@ body {
 .css-1m2lc8c,
 .css-zqk033-overviewContainer,
 .css-1p25j0d,
-.css-70qvj9
- {
+.css-70qvj9 {
     background-color: rgba(0, 0, 0, 0.4) !important;
     backdrop-filter: blur(5px) !important;
 }
@@ -24,6 +23,8 @@ body {
     color: #ffcc00;
     text-align: center;
     margin-bottom: 10px;
+    text-transform: uppercase;
+    font-size: 22px;
 }
 
 /* Focus bottom Window */
@@ -32,6 +33,7 @@ body {
     margin-bottom: 15px;
     border: none;
 }
+
 /* augment boxes */
 .css-4otcna {
     background-color: rgba(1, 25, 0, 0.4) !important;
@@ -61,4 +63,9 @@ body {
 
 .MuiButton-text:hover {
     color: #ffcc00;
+}
+
+/* icons in window */ 
+.css-c9uei6-titleButton svg {
+    fill: #ffcc00;
 }

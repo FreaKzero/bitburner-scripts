@@ -12,7 +12,7 @@ export default {
     { title: "Deploment", script: "bin/deploy.js", args: ["dist/auto.js", "n00dles"], order: 6},
     { title: "Crack Shop Daemon", script: "daemon/crack.js", args:[], order: 7},
     { title: "Backdoor Daemon", script: "daemon/backdoor.js", args:[], order: 8},
-    { title: "Network Monitor", script: "bin/lsnet.js", args:[], order: 9},
+    { title: "Network Monitor", script: "bin/lsnet.js", args:["sort=time"], order: 9},
     { title: "Threaded Attack", script: "bin/thread.js", args: ['dist/auto.js', 'n00dles', '80'], order: 98}, 
     { title: "Building Cache", script: "sys/buildcache.js", args: [], order: 0 },   
   ].sort((a, b) => a.order - b.order),

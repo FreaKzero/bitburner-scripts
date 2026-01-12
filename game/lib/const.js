@@ -43,7 +43,7 @@ export const STOCK_HOST_COLLECTION = [
 
 export const TRAVELMAP = [
   {
-    city: "Volharen",
+    city: "Volhaven",
     locations: [
       "Omnia Cybersystems",
       "SysCore Securities",

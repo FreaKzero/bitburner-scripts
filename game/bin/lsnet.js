@@ -38,7 +38,7 @@ export async function main(ns) {
 
   const render = () => {;
     let output = "\n";
-    let list = HOSTS.filter((a) => !a.includes(cfg.prefixServer));
+    let list = HOSTS.filter((a) => !a.includes(cfg.prefixServer) && !a.includes('w0r1d_d43m0n'));
     list = list.map((item) => {
       const times = [
         ns.getHackTime(item),
@@ -124,7 +124,7 @@ export async function main(ns) {
 
     if (sort === "money") {
       list = list.sort((a, b) =>
-        dir.toLowerCase() === "asc" ? a.money - b.money : b.money - a.money
+        dir.toLowerCase() === "asc" ? a.moneyMax - b.moneyMax : b.moneyMax - a.moneyMax
       );
     }
 

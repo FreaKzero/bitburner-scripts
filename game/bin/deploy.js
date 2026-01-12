@@ -9,6 +9,8 @@ export async function main(ns) {
   const host = ns.args[1] || null;
   const home = ns.args[2] || null;
 
+  // TODO get attacker from global state 
+  
   const servers = deepscan(ns);
   
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -45,7 +47,7 @@ export async function main(ns) {
     const sRam = ns.getScriptRam(script);
     const threads = Math.floor(aRam / sRam);
     const rattack = host || "home";
-    ns.exec(script, "home", threads || 1, rattack);
+    ns.exec(script, "home", Math.floor(threads * (80 / 100)) || 1, rattack);
   }
 }
 

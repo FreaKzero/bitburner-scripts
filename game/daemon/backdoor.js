@@ -39,16 +39,14 @@ export async function main(ns) {
         if (!inView("terminal")) {
           goSidebar("terminal");
         }
-
+        execTerm("home");
         ns.print(`\t   Please Wait ...`);
         ns.print(`\t   🖥️ Backdooring  ${h.host}\n\n\n\n`);
         ns.exec("bin/conn.js", "home", 1, h.host, "true");
         await ns.sleep(10000);
-        execTerm("home");
       }
 
       s = ns.getServer(h.host);
-      
       ns.clearLog();
       O += `${s.backdoorInstalled ? C.green : C.red}${
         s.backdoorInstalled ? " ✔️" : " ❌"

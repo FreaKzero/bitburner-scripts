@@ -11,6 +11,8 @@ export async function main(ns) {
     debug: false,
   });
 
+  // TODO into lib stocks
+  
   ns.disableLog("ALL");
   const startMoney = ns.getPlayer().money;
 

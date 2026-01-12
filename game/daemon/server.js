@@ -76,7 +76,7 @@ export async function main(ns) {
     if (numServer >= maxServer) {
       ns.clearLog();
       ns.print(
-        `   🔥 ${C.magenta}Maximum of Purchaseable Servers reached${C.reset} 🔥\n\n\n\n\n\n\n\n\n\n`
+        `    🔥 ${C.magenta}Maximum of Purchaseable Servers reached${C.reset} 🔥\n\n\n\n`
       );
       ns.exit();
     }
