@@ -25,9 +25,13 @@ export function gangIsWanted(gangInformation) {
 
 export function gangMemberAscend(ns, member) {
   var ascInfo = ns.gang.getAscensionResult(member);
-  if (ascInfo?.respect > 20000) {
+  const factor = (ascInfo.str + ascInfo.def + ascInfo.dex + ascInfo.agi) / 4; 
+ 
+  if (factor > 15) {
     ns.gang.ascendMember(member);
   }
+
+  return factor.toFixed(1);
 }
 
 export function gangBuy(ns, mem) {

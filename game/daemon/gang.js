@@ -14,9 +14,9 @@ export async function main(ns) {
   ns.disableLog("ALL");
   const ln = line(73, "white");
 
-  /*   const { hello } = getArgs(ns, {
-    hello: "world",
-  }); */
+  const { buy } = getArgs(ns, {
+    buy: true,
+  });
 
   setupTail(ns, {
     title: "👨‍👨‍👦‍👦 Gang Daemon",
@@ -49,8 +49,10 @@ export async function main(ns) {
 
     for (const member of members) {
       const minfo = ns.gang.getMemberInformation(member);
-      gangMemberAscend(ns, member);
-      gangBuy(ns, member);
+      const masc = gangMemberAscend(ns, member);
+      if (buy) {
+        gangBuy(ns, member);
+      }
       const pow = getMemberPower(minfo);
       // Routine for creating gang
       // inGang / createGang Karma has to be 54000
@@ -70,12 +72,15 @@ export async function main(ns) {
         if (info.territoryWarfareEngaged && info.territory < 0.95) {
           if (info.power >= 500) {
             ns.gang.setTerritoryWarfare(true);
-          } else if (info.power < 400) {
+          } else if (info.power <= 500) {
             ns.gang.setTerritoryWarfare(false);
           }
         } else if (!info.territoryWarfareEngaged) {
-          ns.gang.setTerritoryWarfare(false);
-          ns.gang.setMemberTask(member, cfg.TASKMAP.reputation);
+          if (pow <= 350) {
+            ns.gang.setMemberTask(member, cfg.TASKMAP.train);
+          } else {
+            ns.gang.setMemberTask(member, cfg.TASKMAP.reputation);
+          }
         }
       }
 
@@ -83,9 +88,9 @@ export async function main(ns) {
       const name = pad(ui.name, 18, "", true);
       const task = pad(ui.task, 10, "", true);
       const mpow = pad(pow, 5, "", false);
-       
+
       const augs = gangGetUIUpgrades(ui).join(" ");
-      ns.print(`${name}${task}\t${mpow}\t${augs}`);
+      ns.print(`${name}${task}\t${mpow}\t${masc}\t${augs}`);
     }
 
     await ns.sleep(cfg.interval);
@@ -94,8 +99,7 @@ export async function main(ns) {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function autocomplete(data, args) {
-  const params = ["hello="];
-
+  const params = ["buy=false"];
   return [...params];
 }
 
