@@ -65,6 +65,8 @@ export async function main(ns) {
           info.territory < 0.95
         ) {
           ns.gang.setMemberTask(member, cfg.TASKMAP.warfare);
+        } else if (pow < 20) {
+          ns.gang.setMemberTask(member, cfg.TASKMAP.train);
         } else {
           ns.gang.setMemberTask(member, cfg.TASKMAP.money);
         }
@@ -76,7 +78,7 @@ export async function main(ns) {
             ns.gang.setTerritoryWarfare(false);
           }
         } else if (!info.territoryWarfareEngaged) {
-          if (pow <= 350) {
+          if (pow < 20) {
             ns.gang.setMemberTask(member, cfg.TASKMAP.train);
           } else {
             ns.gang.setMemberTask(member, cfg.TASKMAP.reputation);
@@ -86,7 +88,7 @@ export async function main(ns) {
 
       const ui = ns.gang.getMemberInformation(member);
       const name = pad(ui.name, 18, "", true);
-      const task = pad(ui.task, 10, "", true);
+      const task = pad(ui.task, 15, "", true);
       const mpow = pad(pow, 5, "", false);
 
       const augs = gangGetUIUpgrades(ui).join(" ");

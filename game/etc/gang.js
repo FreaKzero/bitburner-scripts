@@ -4,18 +4,19 @@ export default {
   memberMax: 12,
   powerLimit: 400,
   names: [
-    "Ice Cube",
+    "",
     "Dr Dre",
     "Snoop Dogg",
+    "Ice Cube",
     "Notorious Big",
     "Eazy E",
     "Scarface",
     "DMX",
     "50 Cent",
-    "Gucci Mane",
     "Young Jeezy",
     "Rick Ross",
     "Nas",
+    "Gucci Mane"
   ],
   TASKMAP: {
     train: "Train Combat",

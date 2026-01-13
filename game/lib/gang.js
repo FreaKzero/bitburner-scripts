@@ -24,14 +24,18 @@ export function gangIsWanted(gangInformation) {
 }
 
 export function gangMemberAscend(ns, member) {
-  var ascInfo = ns.gang.getAscensionResult(member);
-  const factor = (ascInfo.str + ascInfo.def + ascInfo.dex + ascInfo.agi) / 4; 
- 
-  if (factor > 15) {
-    ns.gang.ascendMember(member);
-  }
+  const ascInfo = ns.gang.getAscensionResult(member);
+  if (ascInfo) {
+    const factor = (ascInfo.str + ascInfo.def + ascInfo.dex + ascInfo.agi) / 4;
 
-  return factor.toFixed(1);
+    if (factor > 15) {
+      ns.gang.ascendMember(member);
+    }
+
+    return factor.toFixed(1);
+  } else {
+    return 0;
+  }
 }
 
 export function gangBuy(ns, mem) {
@@ -89,5 +93,5 @@ export function gangGetUIUpgrades({ upgrades = [], augmentations = [] }) {
   return Object.entries(counts)
     .filter(([, n]) => n > 0)
     .sort((a, b) => b[1] - a[1])
-    .map(([key, n]) => pad(`${ICONS[key]?.icon}[${n}]`, 5, ''));
+    .map(([key, n]) => pad(`${ICONS[key]?.icon}[${n}]`, 5, ""));
 }
