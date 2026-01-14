@@ -24,4 +24,6 @@ export default {
     money: "Human Trafficking",
     warfare: "Territory Warfare",
   },
+
+  test_something: "weeeha",
 };
