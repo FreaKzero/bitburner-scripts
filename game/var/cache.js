@@ -82,6 +82,6 @@ export const SPECIAL_HOSTS = [
   { host: "avmnite-02h", lvl: 210, ports: 2, wait: 4000 },
   { host: "I.I.I.I", lvl: 365, ports: 3, wait: 4000 },
   { host: "run4theh111z", lvl: 524, ports: 4, wait: 4000 },
-  { host: "powerhouse-fitness", lvl: 1078, ports: 5, wait: 50000 },
+  { host: "powerhouse-fitness", lvl: 1078, ports: 5, wait: 140000 },
   { host: "The-Cave", lvl: 925, ports: 5, wait: 4000 },
 ];

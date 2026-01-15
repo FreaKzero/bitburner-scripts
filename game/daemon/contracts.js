@@ -13,6 +13,7 @@ export async function main(ns) {
     h: 200,
     x: 1640,
     y: 120,
+    silent: true
   });
 
   const getContractCollection = () => {

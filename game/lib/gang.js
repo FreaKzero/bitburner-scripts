@@ -17,15 +17,18 @@ export function getMemberPower(memberInfo) {
   );
 }
 export function gangIsWanted(gangInformation) {
-  return gangInformation.wantedLevel >= 0.15 
-
+ return (
+    gangInformation.wantedLevel >= 100 &&
+    (1 - gangInformation.wantedPenalty) * 100 > 10
+ )
 }
+
 export function gangMemberAscend(ns, member) {
   const ascInfo = ns.gang.getAscensionResult(member);
   if (ascInfo) {
     const factor = (ascInfo.str + ascInfo.def + ascInfo.dex + ascInfo.agi) / 4;
 
-    if (factor >= 4) {
+    if (factor >= 3.5) {
       ns.gang.ascendMember(member);
     }
 

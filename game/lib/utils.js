@@ -61,12 +61,16 @@ export const decorateLocationLine = (txt) => {
  *   x?: number;
  *   y?: number;
  *   title?: string;
+ *   silent?: boolean;
  * }} [opt={}] - Optional Tail configuration
  */
 export function setupTail(ns, opt = {}) {
   if (!opt) return;
 
-  ns.ui.openTail();
+  if (!opt.silent) {
+    ns.ui.openTail();
+  }
+
   if (opt.title) {
     ns.ui.setTailTitle(` ${opt.title}`);
   }
@@ -133,7 +137,7 @@ export function getRamBar(ns, host = "home") {
   }
 
   return {
-    progress: `${C.white}[${C.reset}${bars}${C.white}]${C.reset}`,
+    progress: `${C.black}[${C.reset}${bars}${C.black}]${C.reset}`,
     info: `${ns.formatRam(used)}/${ns.formatRam(all)}`,
     percent: `${col}${per}%${C.reset}`,
   };

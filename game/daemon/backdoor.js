@@ -39,14 +39,12 @@ export async function main(ns) {
         if (!inView("terminal")) {
           goSidebar("terminal");
         }
-
+        execTerm("home");
         ns.print(`\t   Please Wait ...`);
         ns.print(`\t   🖥️ Backdooring  ${h.host}\n\n\n\n`);
         ns.exec("bin/conn.js", "home", 1, h.host, "true");
-        await ns.sleep(h.wait);
-        execTerm("home");
       }
-
+      await ns.sleep(h.wait);
       s = ns.getServer(h.host);
       ns.clearLog();
       O += `${s.backdoorInstalled ? C.green : C.red}${
@@ -56,10 +54,12 @@ export async function main(ns) {
       if (s.backdoorInstalled) {
         hacked++;
       }
+       
     }
 
     if (hacked >= SPECIAL_HOSTS.length && openPorts >= 5) {
-      O = `${C.yellow}       🕶️ All Faction Hosts are Backdoored 🕶️\n\n\n\n`;
+      ns.print(`${C.yellow}        🔥 All Faction Hosts are Backdoored 🔥\n\n\n\n`);
+      ns.exit();
     }
 
     ns.print(O);
@@ -68,6 +68,6 @@ export async function main(ns) {
       findElement("button", "Focus", true);
     }
 
-    await ns.sleep(20 * 10000);
+    await ns.asleep(120000);
   }
 }

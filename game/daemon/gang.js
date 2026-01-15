@@ -14,9 +14,10 @@ export async function main(ns) {
   ns.disableLog("ALL");
   const ln = line(74, "black");
 
-  const { buy, focus } = getArgs(ns, {
+  const { buy, focus, war } = getArgs(ns, {
     buy: true,
     focus: "money",
+    war: false,
   });
 
   const FOCUS = focus.toLowerCase();
@@ -39,21 +40,17 @@ export async function main(ns) {
     const gangName = pad(info.faction, 10, "", true);
     const gangPower = pad(info.power.toFixed(2), 1, "⚔️", false);
     const gangTerritory = pad(ns.formatPercent(info.territory), 3, "", false);
-    const gangWanted = pad(ns.formatPercent(info.wantedPenalty), 3, "", false);
-    
-    const gangMoneyGain = info.moneyGainRate > 0 ? pad(
-      `${ns.formatNumber(info.moneyGainRate)}/s`,
-      9,
-      "💸$",
-      true
-    ): '';
-    
-    const gangRespectGain = info.respectGainRate > 0 ? pad(
-      `${ns.formatNumber(info.respectGainRate)}/s`,
-      9,
-      "🤝",
-      true
-    ) : '';
+    const gangWanted = pad(info.wantedLevel.toFixed(2), 3, "", false);
+
+    const gangMoneyGain =
+      info.moneyGainRate > 0
+        ? pad(`${ns.formatNumber(info.moneyGainRate)}/s`, 9, "💸$", true)
+        : "";
+
+    const gangRespectGain =
+      info.respectGainRate > 0
+        ? pad(`${ns.formatNumber(info.respectGainRate)}/s`, 9, "🤝", true)
+        : "";
 
     ns.print(ln);
     if (info.territoryWarfareEngaged) {
@@ -64,7 +61,7 @@ export async function main(ns) {
     );
     ns.print(ln);
     ns.print(
-      `${C.white} Member\t\t\t        TASK   ⚔️  🚀\t\t       INVENTORY${C.reset}`
+      `${C.white} MEMBER\t\t\t        TASK   ⚔️  🚀\t\t       INVENTORY${C.reset}`
     );
     ns.print(ln);
     for (const member of members) {
@@ -77,7 +74,7 @@ export async function main(ns) {
       // Routine for creating gang
       // inGang / createGang Karma has to be 54000
       if (!wanted) {
-        if (info.power > 2300) {
+        if (info.power > 2300 && war) {
           ns.gang.setTerritoryWarfare(true);
         } else if (info.power < 2300 && !wanted) {
           ns.gang.setTerritoryWarfare(false);
@@ -98,12 +95,20 @@ export async function main(ns) {
               ns.gang.setMemberTask(member, cfg.TASKMAP.warfare);
             } else if (FOCUS === "money") {
               ns.gang.setMemberTask(member, cfg.TASKMAP.money);
+            } else if (FOCUS === "respect") {
+              ns.gang.setMemberTask(member, cfg.TASKMAP.reputation);
             }
           }
         } else if (pow < 170) {
           ns.gang.setMemberTask(member, cfg.TASKMAP.train);
         } else {
-          ns.gang.setMemberTask(member, cfg.TASKMAP.money);
+          if (FOCUS === "power" && !info.territoryWarfareEngaged) {
+            ns.gang.setMemberTask(member, cfg.TASKMAP.warfare);
+          } else if (FOCUS === "money") {
+            ns.gang.setMemberTask(member, cfg.TASKMAP.money);
+          } else if (FOCUS === "respect") {
+            ns.gang.setMemberTask(member, cfg.TASKMAP.reputation);
+          }
         }
       } else {
         if (pow < 20) {
@@ -128,7 +133,7 @@ export async function main(ns) {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function autocomplete(data, args) {
-  const params = ["buy=false", "focus=power"];
+  const params = ["buy=false", "focus=power", "focus=respect", "war=true"];
   return [...params];
 }
 

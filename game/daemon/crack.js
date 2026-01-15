@@ -31,7 +31,7 @@ export async function main(ns) {
       goLocation("T");
       findElement(".MuiButtonBase-root", "TOR router", true);
       goSidebar("Terminal");
-      ns.print(`${C.yellow} Buying TOR Router`);
+      ns.print(`${C.yellow} 📡 Buying TOR Router`);
     }
 
     if (ns.hasTorRouter()) {
@@ -64,6 +64,6 @@ export async function main(ns) {
     
     ns.clearLog();
     ns.print(`${C.magenta}               ⏳ Waiting for Money ⏳\n\n\n\n`);
-    await ns.sleep(20 * 10000);
+    await ns.asleep(120000);
   }
 }
