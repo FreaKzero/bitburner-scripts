@@ -19,6 +19,7 @@ export async function main(ns) {
     focus: "money",
   });
 
+  const FOCUS = focus.toLowerCase();
   setupTail(ns, {
     title: "👨‍👨‍👦‍👦 Gang Daemon",
     w: 707,
@@ -57,39 +58,34 @@ export async function main(ns) {
       const pow = getMemberPower(minfo);
       // Routine for creating gang
       // inGang / createGang Karma has to be 54000
+
+      if (info.power > 2300 && !wanted) {
+        ns.gang.setTerritoryWarfare(true);
+      } else if (info.power < 2300 || wanted) {
+        ns.gang.setTerritoryWarfare(false);
+      }
+
       if (wanted) {
         ns.gang.setMemberTask(member, cfg.TASKMAP.wanted);
       } else if (members.length >= cfg.memberMax) {
-        // here we need reputation
-        if (
-          info.power >= 2300 && 
-          pow >= 300 &&
-          info.territoryWarfareEngaged &&
-          info.territory < 0.95
-        ) {
-          ns.gang.setMemberTask(member, cfg.TASKMAP.warfare);
-        } else if (pow < 20) {
-          ns.gang.setMemberTask(member, cfg.TASKMAP.train);
-        } else if (pow > 20) {
-          if (focus.toLowerCase() === "money") {
-            ns.gang.setMemberTask(member, cfg.TASKMAP.money);
-          } else if (focus.toLowerCase() === "power") {
+        if (pow >= 200 && info.territoryWarfareEngaged) {
+          if (info.territory < 0.95) {
             ns.gang.setMemberTask(member, cfg.TASKMAP.warfare);
+          } else {
+            if (FOCUS === "power" && !info.territoryWarfareEngaged) {
+              ns.gang.setMemberTask(member, cfg.TASKMAP.warfare);
+            } else if (FOCUS === "money") {
+              ns.gang.setMemberTask(member, cfg.TASKMAP.money);
+            }
           }
+        } else if (pow < 200) {
+          ns.gang.setMemberTask(member, cfg.TASKMAP.train)
         }
       } else {
-        if (info.territoryWarfareEngaged && info.territory < 0.95) {
-          if (info.power >= 300) {
-            ns.gang.setTerritoryWarfare(true);
-          } else if (info.power <= 300) {
-            ns.gang.setTerritoryWarfare(false);
-          }
-        } else if (!info.territoryWarfareEngaged) {
-          if (pow < 20) {
-            ns.gang.setMemberTask(member, cfg.TASKMAP.train);
-          } else {
-            ns.gang.setMemberTask(member, cfg.TASKMAP.reputation);
-          }
+        if (pow < 20) {
+          ns.gang.setMemberTask(member, cfg.TASKMAP.train);
+        } else {
+          ns.gang.setMemberTask(member, cfg.TASKMAP.reputation);
         }
       }
 

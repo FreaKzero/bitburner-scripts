@@ -28,7 +28,7 @@ export function gangMemberAscend(ns, member) {
   if (ascInfo) {
     const factor = (ascInfo.str + ascInfo.def + ascInfo.dex + ascInfo.agi) / 4;
 
-    if (factor >= 5) {
+    if (factor >= 4) {
       ns.gang.ascendMember(member);
     }
 
