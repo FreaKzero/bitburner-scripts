@@ -1,5 +1,5 @@
 import { DARKWEB_PROGRAMS } from "../lib/const";
-import { C, fromFormat, setupTail } from "../lib/utils";
+import { C, fromFormat, setupTail, initState } from "../lib/utils";
 import {
   goLocation,
   goSidebar,
@@ -20,7 +20,7 @@ export async function main(ns) {
 
   while (true) {
     ns.clearLog();
-
+    const [attack,] = initState(ns, "attack");
     if (!inView("terminal")) {
       goSidebar("terminal");
     }
@@ -46,8 +46,8 @@ export async function main(ns) {
         execTerm(`cracknet`);
         ns.print(`${C.yellow} 👾 Executing cracknet`);
         await ns.sleep(1500);
-        ns.print(`${C.red} 💣 Deploy and Attack foodnstuff`);
-        execTerm(`deploy dist/auto.js foodnstuff`);
+        ns.print(`${C.red} 💣 Deploy and Attack ${attack}`);
+        execTerm(`deploy dist/auto.js ${attack}`);
         
         // TODO Accept Faction Dialogs
       }
@@ -63,7 +63,7 @@ export async function main(ns) {
     }
     
     ns.clearLog();
-    ns.print(`${C.magenta}           ⏳ Waiting for Money ⏳\n\n\n\n`);
+    ns.print(`${C.magenta}               ⏳ Waiting for Money ⏳\n\n\n\n`);
     await ns.sleep(20 * 10000);
   }
 }

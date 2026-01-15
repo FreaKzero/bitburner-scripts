@@ -12,7 +12,7 @@ import { setupTail, getArgs, pad, line, C } from "../lib/utils";
 /** @param {import("..").NS } ns */
 export async function main(ns) {
   ns.disableLog("ALL");
-  const ln = line(73, "black");
+  const ln = line(74, "black");
 
   const { buy, focus } = getArgs(ns, {
     buy: true,
@@ -20,12 +20,13 @@ export async function main(ns) {
   });
 
   const FOCUS = focus.toLowerCase();
+
   setupTail(ns, {
     title: "👨‍👨‍👦‍👦 Gang Daemon",
-    w: 707,
-    h: 420,
-    x: 753,
-    y: 374,
+    w: 715,
+    h: 501,
+    x: 921,
+    y: 283,
   });
 
   while (true) {
@@ -35,22 +36,36 @@ export async function main(ns) {
     const wanted = gangIsWanted(info);
     const members = ns.gang.getMemberNames();
 
-    const gangName = pad(info.faction, 15, "", true);
-    const gangPower = pad(info.power.toFixed(2), 5, "", true);
-    const gangTerritory = pad(ns.formatPercent(info.territory), 5, "", true);
-    const gangWanted = pad(ns.formatPercent(info.wantedLevelGainRate), 3, "", true);
-    const gangMoneyGain = pad(ns.formatPercent(info.moneyGainRate), 3, "", true);
-    const gangRespect = pad(ns.formatPercent(info.respectGainRate), 3, "", true);
+    const gangName = pad(info.faction, 10, "", true);
+    const gangPower = pad(info.power.toFixed(2), 1, "⚔️", false);
+    const gangTerritory = pad(ns.formatPercent(info.territory), 3, "", false);
+    const gangWanted = pad(ns.formatPercent(info.wantedPenalty), 3, "", false);
+    
+    const gangMoneyGain = info.moneyGainRate > 0 ? pad(
+      `${ns.formatNumber(info.moneyGainRate)}/s`,
+      9,
+      "💸$",
+      true
+    ): '';
+    
+    const gangRespectGain = info.respectGainRate > 0 ? pad(
+      `${ns.formatNumber(info.respectGainRate)}/s`,
+      9,
+      "🤝",
+      true
+    ) : '';
 
     ns.print(ln);
     if (info.territoryWarfareEngaged) {
       ns.print(`${C.red}\t\t\t[TERRITORY WARFARE ENGAGED] `);
     }
     ns.print(
-      `${C.yellow}${gangName}\t  ⚔️${gangPower}   🗺️${gangTerritory}  👮${gangWanted}  💸${gangMoneyGain}  🤝${gangRespect}`  
+      `${C.yellow} ${gangName}  ${gangPower} 🗺️${gangTerritory} 👮${gangWanted} ${gangMoneyGain}${gangRespectGain}`
     );
     ns.print(ln);
-    ns.print(`${C.white} Member\t\t\t        TASK   ⚔️  🚀\t\t       INVENTORY${C.reset}`)
+    ns.print(
+      `${C.white} Member\t\t\t        TASK   ⚔️  🚀\t\t       INVENTORY${C.reset}`
+    );
     ns.print(ln);
     for (const member of members) {
       const minfo = ns.gang.getMemberInformation(member);
@@ -61,14 +76,18 @@ export async function main(ns) {
       const pow = getMemberPower(minfo);
       // Routine for creating gang
       // inGang / createGang Karma has to be 54000
-
-      if (info.power > 2300 && !wanted) {
-        ns.gang.setTerritoryWarfare(true);
-      } else if (info.power < 2300 || wanted) {
-        ns.gang.setTerritoryWarfare(false);
+      if (!wanted) {
+        if (info.power > 2300) {
+          ns.gang.setTerritoryWarfare(true);
+        } else if (info.power < 2300 && !wanted) {
+          ns.gang.setTerritoryWarfare(false);
+        }
       }
 
       if (wanted) {
+        if (!info.territoryWarfareEngaged) {
+          ns.gang.setTerritoryWarfare(false);
+        }
         ns.gang.setMemberTask(member, cfg.TASKMAP.wanted);
       } else if (members.length >= cfg.memberMax) {
         if (pow >= 170 && info.territoryWarfareEngaged) {
@@ -82,7 +101,9 @@ export async function main(ns) {
             }
           }
         } else if (pow < 170) {
-          ns.gang.setMemberTask(member, cfg.TASKMAP.train)
+          ns.gang.setMemberTask(member, cfg.TASKMAP.train);
+        } else {
+          ns.gang.setMemberTask(member, cfg.TASKMAP.money);
         }
       } else {
         if (pow < 20) {

@@ -17,12 +17,9 @@ export function getMemberPower(memberInfo) {
   );
 }
 export function gangIsWanted(gangInformation) {
-  return (
-    gangInformation.wantedLevel >= 100 &&
-    (1 - gangInformation.wantedPenalty) * 100 > 10
-  );
-}
+  return gangInformation.wantedLevel >= 0.15 
 
+}
 export function gangMemberAscend(ns, member) {
   const ascInfo = ns.gang.getAscensionResult(member);
   if (ascInfo) {

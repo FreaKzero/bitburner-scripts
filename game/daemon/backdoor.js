@@ -39,11 +39,12 @@ export async function main(ns) {
         if (!inView("terminal")) {
           goSidebar("terminal");
         }
-        execTerm("home");
+
         ns.print(`\t   Please Wait ...`);
         ns.print(`\t   🖥️ Backdooring  ${h.host}\n\n\n\n`);
         ns.exec("bin/conn.js", "home", 1, h.host, "true");
-        await ns.sleep(10000);
+        await ns.sleep(h.wait);
+        execTerm("home");
       }
 
       s = ns.getServer(h.host);
@@ -58,7 +59,7 @@ export async function main(ns) {
     }
 
     if (hacked >= SPECIAL_HOSTS.length && openPorts >= 5) {
-      O = `${C.magenta}       🕶️ All Faction Hosts are Backdoored 🕶️\n\n\n\n`;
+      O = `${C.yellow}       🕶️ All Faction Hosts are Backdoored 🕶️\n\n\n\n`;
     }
 
     ns.print(O);
