@@ -12,7 +12,7 @@ import { setupTail, getArgs, pad, line, C } from "../lib/utils";
 /** @param {import("..").NS } ns */
 export async function main(ns) {
   ns.disableLog("ALL");
-  const ln = line(73, "white");
+  const ln = line(73, "black");
 
   const { buy, focus } = getArgs(ns, {
     buy: true,
@@ -38,17 +38,20 @@ export async function main(ns) {
     const gangName = pad(info.faction, 15, "", true);
     const gangPower = pad(info.power.toFixed(2), 5, "", true);
     const gangTerritory = pad(ns.formatPercent(info.territory), 5, "", true);
-    const gangWanted = pad(ns.formatPercent(info.wantedPenalty), 5, "", true);
+    const gangWanted = pad(ns.formatPercent(info.wantedLevelGainRate), 3, "", true);
+    const gangMoneyGain = pad(ns.formatPercent(info.moneyGainRate), 3, "", true);
+    const gangRespect = pad(ns.formatPercent(info.respectGainRate), 3, "", true);
 
     ns.print(ln);
     if (info.territoryWarfareEngaged) {
       ns.print(`${C.red}\t\t\t[TERRITORY WARFARE ENGAGED] `);
     }
     ns.print(
-      `${C.yellow}${gangName}\t   POWER:${gangPower}   TERRITORY:${gangTerritory}  WANTED:${gangWanted}`
+      `${C.yellow}${gangName}\t  ⚔️${gangPower}   🗺️${gangTerritory}  👮${gangWanted}  💸${gangMoneyGain}  🤝${gangRespect}`  
     );
     ns.print(ln);
-
+    ns.print(`${C.white} Member\t\t\t        TASK   ⚔️  🚀\t\t       INVENTORY${C.reset}`)
+    ns.print(ln);
     for (const member of members) {
       const minfo = ns.gang.getMemberInformation(member);
       const masc = gangMemberAscend(ns, member);
@@ -68,7 +71,7 @@ export async function main(ns) {
       if (wanted) {
         ns.gang.setMemberTask(member, cfg.TASKMAP.wanted);
       } else if (members.length >= cfg.memberMax) {
-        if (pow >= 200 && info.territoryWarfareEngaged) {
+        if (pow >= 170 && info.territoryWarfareEngaged) {
           if (info.territory < 0.95) {
             ns.gang.setMemberTask(member, cfg.TASKMAP.warfare);
           } else {
@@ -78,7 +81,7 @@ export async function main(ns) {
               ns.gang.setMemberTask(member, cfg.TASKMAP.money);
             }
           }
-        } else if (pow < 200) {
+        } else if (pow < 170) {
           ns.gang.setMemberTask(member, cfg.TASKMAP.train)
         }
       } else {
@@ -92,12 +95,12 @@ export async function main(ns) {
       const ui = ns.gang.getMemberInformation(member);
       const name = pad(ui.name, 18, "", true);
       const task = pad(ui.task, 15, "", true);
-      const mpow = pad(pow, 5, "", false);
+      const mpow = pad(pow, 3, "", false);
 
       const augs = gangGetUIUpgrades(ui).join(" ");
-      ns.print(`${name}${task}\t${mpow}\t${masc}\t${augs}`);
+      ns.print(` ${name}${task}  ${mpow}  ${masc}  ${augs}`);
     }
-
+    ns.print(ln);
     await ns.sleep(cfg.interval);
   }
 }
