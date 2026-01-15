@@ -14,8 +14,9 @@ export async function main(ns) {
   ns.disableLog("ALL");
   const ln = line(73, "white");
 
-  const { buy } = getArgs(ns, {
+  const { buy, focus } = getArgs(ns, {
     buy: true,
+    focus: "money",
   });
 
   setupTail(ns, {
@@ -34,7 +35,7 @@ export async function main(ns) {
     const members = ns.gang.getMemberNames();
 
     const gangName = pad(info.faction, 15, "", true);
-    const gangRespect = pad(ns.formatPercent(info.respect), 5, "", true);
+    const gangPower = pad(info.power.toFixed(2), 5, "", true);
     const gangTerritory = pad(ns.formatPercent(info.territory), 5, "", true);
     const gangWanted = pad(ns.formatPercent(info.wantedPenalty), 5, "", true);
 
@@ -43,7 +44,7 @@ export async function main(ns) {
       ns.print(`${C.red}\t\t\t[TERRITORY WARFARE ENGAGED] `);
     }
     ns.print(
-      `${C.yellow}${gangName}\t   RESPECT:${gangRespect}   TERRITORY:${gangTerritory}  WANTED:${gangWanted}`
+      `${C.yellow}${gangName}\t   POWER:${gangPower}   TERRITORY:${gangTerritory}  WANTED:${gangWanted}`
     );
     ns.print(ln);
 
@@ -59,22 +60,28 @@ export async function main(ns) {
       if (wanted) {
         ns.gang.setMemberTask(member, cfg.TASKMAP.wanted);
       } else if (members.length >= cfg.memberMax) {
+        // here we need reputation
         if (
-          pow >= 350 &&
+          info.power >= 2300 && 
+          pow >= 300 &&
           info.territoryWarfareEngaged &&
           info.territory < 0.95
         ) {
           ns.gang.setMemberTask(member, cfg.TASKMAP.warfare);
         } else if (pow < 20) {
           ns.gang.setMemberTask(member, cfg.TASKMAP.train);
-        } else {
-          ns.gang.setMemberTask(member, cfg.TASKMAP.money);
+        } else if (pow > 20) {
+          if (focus.toLowerCase() === "money") {
+            ns.gang.setMemberTask(member, cfg.TASKMAP.money);
+          } else if (focus.toLowerCase() === "power") {
+            ns.gang.setMemberTask(member, cfg.TASKMAP.warfare);
+          }
         }
       } else {
         if (info.territoryWarfareEngaged && info.territory < 0.95) {
-          if (info.power >= 500) {
+          if (info.power >= 300) {
             ns.gang.setTerritoryWarfare(true);
-          } else if (info.power <= 500) {
+          } else if (info.power <= 300) {
             ns.gang.setTerritoryWarfare(false);
           }
         } else if (!info.territoryWarfareEngaged) {
@@ -101,7 +108,7 @@ export async function main(ns) {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function autocomplete(data, args) {
-  const params = ["buy=false"];
+  const params = ["buy=false", "focus=power"];
   return [...params];
 }
 
