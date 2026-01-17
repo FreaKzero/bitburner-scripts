@@ -22,7 +22,6 @@ export async function main(ns) {
     y: 12,
   });
 
-  const [attacked] = initState(ns, 'attack');
   const { watch, sort, ducks, dir } = getArgs(
     ns,
     {
@@ -37,6 +36,7 @@ export async function main(ns) {
   );
 
   const render = () => {;
+    const [attacked] = initState(ns, 'attack');
     let output = "\n";
     let list = HOSTS.filter((a) => !a.includes(cfg.prefixServer) && !a.includes('w0r1d_d43m0n'));
     list = list.map((item) => {

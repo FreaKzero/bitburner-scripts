@@ -16,14 +16,22 @@ export async function main(ns) {
 
   const { buy, focus, war } = getArgs(ns, {
     buy: true,
-    focus: "money",
+    focus: false,
     war: false,
   });
 
-  const FOCUS = focus.toLowerCase();
+    const FOCUS = focus && focus.toLowerCase() ||
+    await ns.prompt("Select Focus", {
+      type: "select",
+      choices: [
+        "respect",
+        "money",
+        "power"
+      ],
+    });
 
   setupTail(ns, {
-    title: "👨‍👨‍👦‍👦 Gang Daemon",
+    title: `👨‍👨‍👦‍👦 Gang Daemon [${FOCUS.toUpperCase()}]`,
     w: 715,
     h: 501,
     x: 921,
@@ -99,7 +107,7 @@ export async function main(ns) {
               ns.gang.setMemberTask(member, cfg.TASKMAP.reputation);
             }
           }
-        } else if (pow < 170) {
+        } else if (pow < 20) {
           ns.gang.setMemberTask(member, cfg.TASKMAP.train);
         } else {
           if (FOCUS === "power" && !info.territoryWarfareEngaged) {
@@ -133,7 +141,7 @@ export async function main(ns) {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function autocomplete(data, args) {
-  const params = ["buy=false", "focus=power", "focus=respect", "war=true"];
+  const params = ["buy=false", "focus=power", "focus=respect", "focus=money", "war=true"];
   return [...params];
 }
 
