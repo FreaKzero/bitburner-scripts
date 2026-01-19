@@ -49,7 +49,7 @@ export async function main(ns) {
 
   while (true) {
     ns.clearLog();
-    const [exit, setExit] = initState(ns, "StockExit");
+    const [exit] = initState(ns, "StockExit");
     
     let O = ``;
 

@@ -31,7 +31,7 @@ export async function main(ns) {
   });
 
   const SERVER_NEW_RAM = 8;
-  const numServer = ns.getPurchasedServers().length;
+ 
   const maxServer = ns.getPurchasedServerLimit();
 
   const getServerCollection = () => {
@@ -64,6 +64,7 @@ export async function main(ns) {
   const [attack] = initState(ns, 'attack');
 
   while (true) {
+    const numServer = ns.getPurchasedServers().length;
     let hadFocus = inView("focus");
 
     const AllServers = getServerCollection();

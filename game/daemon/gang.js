@@ -20,18 +20,8 @@ export async function main(ns) {
     war: false,
   });
 
-    const FOCUS = focus && focus.toLowerCase() ||
-    await ns.prompt("Select Focus", {
-      type: "select",
-      choices: [
-        "respect",
-        "money",
-        "power"
-      ],
-    });
-
   setupTail(ns, {
-    title: `👨‍👨‍👦‍👦 Gang Daemon [${FOCUS.toUpperCase()}]`,
+    title: `👨‍👨‍👦‍👦 Gang Daemon`,
     w: 715,
     h: 501,
     x: 921,
@@ -42,8 +32,22 @@ export async function main(ns) {
     ns.clearLog();
     gangRecruit(ns, cfg.TASKMAP.train);
     const info = ns.gang.getGangInformation();
+    let FOCUS;
+
     const wanted = gangIsWanted(info);
     const members = ns.gang.getMemberNames();
+
+    if (!focus) {
+      if (members.length < cfg.memberMax) {
+        FOCUS = "respect";
+      } else if (info.territory < 0.95) {
+        FOCUS = "power";
+      } else {
+        FOCUS = "money";
+      }
+    } else {
+      FOCUS = focus.toLowerCase();
+    }
 
     const gangName = pad(info.faction, 10, "", true);
     const gangPower = pad(info.power.toFixed(2), 1, "⚔️", false);
@@ -65,11 +69,11 @@ export async function main(ns) {
       ns.print(`${C.red}\t\t\t[TERRITORY WARFARE ENGAGED] `);
     }
     ns.print(
-      `${C.yellow} ${gangName}  ${gangPower} 🗺️${gangTerritory} 👮${gangWanted} ${gangMoneyGain}${gangRespectGain}`
+      `${C.yellow} ${gangName}  ${gangPower} 🗺️${gangTerritory} 👮${gangWanted} ${gangMoneyGain}${gangRespectGain}`,
     );
     ns.print(ln);
     ns.print(
-      `${C.white} MEMBER\t\t\t        TASK   ⚔️  🚀\t\t       INVENTORY${C.reset}`
+      `${C.white} MEMBER\t\t\t        TASK   ⚔️  🚀\t\t       INVENTORY${C.reset}`,
     );
     ns.print(ln);
     for (const member of members) {
@@ -141,7 +145,13 @@ export async function main(ns) {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function autocomplete(data, args) {
-  const params = ["buy=false", "focus=power", "focus=respect", "focus=money", "war=true"];
+  const params = [
+    "buy=false",
+    "focus=power",
+    "focus=respect",
+    "focus=money",
+    "war=true",
+  ];
   return [...params];
 }
 

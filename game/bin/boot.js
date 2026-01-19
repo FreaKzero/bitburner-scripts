@@ -1,6 +1,6 @@
 import { C } from "../lib/utils";
 import cfg from "../etc/sys";
-import { goCity, findElement, reactClickButton } from "../lib/ui";
+//import { goCity, findElement, reactClickButton } from "../lib/ui";
 
 
 // TODO remove inject use autoexec
@@ -48,7 +48,7 @@ export async function main(ns) {
 await ns.sleep(500);
 
 ns.print(LOGO);
-
+/* 
 if (ns.getPlayer().skills.hacking < 15) {
     goCity("foodnstuff");
     await ns.sleep(500);
@@ -56,5 +56,5 @@ if (ns.getPlayer().skills.hacking < 15) {
     reactClickButton("Work");
     await ns.sleep(500);
     findElement("button", "Focus", true);
-  }
+  } */
 }

@@ -15,6 +15,8 @@ export default {
     { title: "Network Monitor", script: "bin/lsnet.js", args:["sort=time", "watch=true"], order: 9},
     { title: "Threaded Attack", script: "bin/thread.js", args: ['dist/auto.js', 'n00dles', '80'], order: 98}, 
     { title: "Building Cache", script: "sys/buildcache.js", args: [], order: 0 },   
+    { title: "Gang", script: "daemon/gang.js", args: ["focus=money"], order: 999 },   
+
   ].sort((a, b) => a.order - b.order),
   dist: [
     "dist/auto.js",

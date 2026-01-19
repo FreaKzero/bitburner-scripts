@@ -18,6 +18,8 @@ export async function main(ns) {
     y: 361,
   });
 
+  let firstTor = false;
+
   while (true) {
     ns.clearLog();
     const [attack,] = initState(ns, "attack");
@@ -32,9 +34,10 @@ export async function main(ns) {
       findElement(".MuiButtonBase-root", "TOR router", true);
       goSidebar("Terminal");
       ns.print(`${C.yellow} 📡 Buying TOR Router`);
+      firstTor = true;
     }
 
-    if (ns.hasTorRouter()) {
+    if (ns.hasTorRouter() || firstTor) {
       for (const prog of list) {
         if (prog.price > ns.getPlayer().money) {
           break;
